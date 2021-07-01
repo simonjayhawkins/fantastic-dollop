@@ -1,0 +1,9 @@
+{
+    "arch": "x86_64",
+    "cpu": "Intel(R) Xeon(R) E-2174G CPU @ 3.80GHz",
+    "machine": "T3630",
+    "num_cpu": "4",
+    "os": "Linux 5.4.72-microsoft-standard-WSL2",
+    "ram": "16GB",
+    "version": 1
+}
