@@ -121,7 +121,8 @@
     // skipped for the matching benchmark.
     //
     "regressions_first_commits": {
-        ".*": "0409521665"
+        "^tslibs\\.timestamp\\.TimestampProperties": "dae5c597",
+        "^inference\\.ToTimedelta\\.time_convert_int@1\\.3\\.x$": "b7618487",
     },
     "regression_thresholds": {
     },
