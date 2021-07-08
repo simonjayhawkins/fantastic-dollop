@@ -7161,6 +7161,38 @@
         "version": "27eec9eb147be5e17060fa041b6bf1efd02796180cd220cc1fdf9bc7a2489e95",
         "warmup_time": -1
     },
+    "groupby.Sample.time_sample": {
+        "code": "class Sample:\n    def time_sample(self):\n        self.df.groupby(self.groups).sample(n=1)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Sample:\n    def setup(self):\n        N = 10 ** 3\n        self.df = DataFrame({\"a\": np.zeros(N)})\n        self.groups = np.arange(0, N)\n        self.weights = np.ones(N)",
+        "min_run_count": 2,
+        "name": "groupby.Sample.time_sample",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "68b221d9354662a3ba5d7d1b908212f1bc335cd123e2fe19c4b5e622fedd9a05",
+        "warmup_time": -1
+    },
+    "groupby.Sample.time_sample_weights": {
+        "code": "class Sample:\n    def time_sample_weights(self):\n        self.df.groupby(self.groups).sample(n=1, weights=self.weights)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Sample:\n    def setup(self):\n        N = 10 ** 3\n        self.df = DataFrame({\"a\": np.zeros(N)})\n        self.groups = np.arange(0, N)\n        self.weights = np.ones(N)",
+        "min_run_count": 2,
+        "name": "groupby.Sample.time_sample_weights",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "a7283f19c2b6a59ca16073736d734d079f709382c04db333b0b0bf62b5a398ca",
+        "warmup_time": -1
+    },
     "groupby.Size.time_category_size": {
         "code": "class Size:\n    def time_category_size(self):\n        self.draws.groupby(self.cats).size()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Size:\n    def setup(self):\n        n = 10 ** 5\n        offsets = np.random.randint(n, size=n).astype(\"timedelta64[ns]\")\n        dates = np.datetime64(\"now\") + offsets\n        self.df = DataFrame(\n            {\n                \"key1\": np.random.randint(0, 500, size=n),\n                \"key2\": np.random.randint(0, 100, size=n),\n                \"value1\": np.random.randn(n),\n                \"value2\": np.random.randn(n),\n                \"value3\": np.random.randn(n),\n                \"dates\": dates,\n            }\n        )\n        self.draws = Series(np.random.randn(n))\n        labels = Series([\"foo\", \"bar\", \"baz\", \"qux\"] * (n // 4))\n        self.cats = labels.astype(\"category\")",
         "min_run_count": 2,
@@ -15983,6 +16015,29 @@
         "type": "time",
         "unit": "seconds",
         "version": "30880eb453b9d41a953d95fc25ba24088b0a48b94ab49ea12406e4abc0b976ac",
+        "warmup_time": -1
+    },
+    "rolling.TableMethod.time_ewm_mean": {
+        "code": "class TableMethod:\n    def time_ewm_mean(self, method):\n        self.df.ewm(1, method=method).mean(engine=\"numba\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass TableMethod:\n    def setup(self, method):\n        self.df = pd.DataFrame(np.random.randn(10, 1000))",
+        "min_run_count": 2,
+        "name": "rolling.TableMethod.time_ewm_mean",
+        "number": 0,
+        "param_names": [
+            "method"
+        ],
+        "params": [
+            [
+                "'single'",
+                "'table'"
+            ]
+        ],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "446dcdc251bda1381a3cf943305e8a6a22ea15ca4513ec2dc7454a8692ab99ad",
         "warmup_time": -1
     },
     "rolling.VariableWindowMethods.peakmem_rolling": {
