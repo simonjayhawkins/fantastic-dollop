@@ -5521,60 +5521,6 @@
         "version": "bf9c8ff877f2cd95431692cfe963e37b3de4634176be673d3de0b663177d7ad3",
         "warmup_time": -1
     },
-    "frame_methods.ToDict.time_to_dict_datetimelike": {
-        "code": "class ToDict:\n    def time_to_dict_datetimelike(self, orient):\n        self.datetimelike_df.to_dict(orient=orient)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDict:\n    def setup(self, orient):\n        data = np.random.randint(0, 1000, size=(10000, 4))\n        self.int_df = DataFrame(data)\n        self.datetimelike_df = self.int_df.astype(\"timedelta64[ns]\")",
-        "min_run_count": 2,
-        "name": "frame_methods.ToDict.time_to_dict_datetimelike",
-        "number": 0,
-        "param_names": [
-            "orient"
-        ],
-        "params": [
-            [
-                "'dict'",
-                "'list'",
-                "'series'",
-                "'split'",
-                "'records'",
-                "'index'"
-            ]
-        ],
-        "repeat": 0,
-        "rounds": 2,
-        "sample_time": 0.01,
-        "timeout": 60.0,
-        "type": "time",
-        "unit": "seconds",
-        "version": "939f612766529ae46a0b196a3dc13061331265310113f5a5c18d503fd623eb63",
-        "warmup_time": -1
-    },
-    "frame_methods.ToDict.time_to_dict_ints": {
-        "code": "class ToDict:\n    def time_to_dict_ints(self, orient):\n        self.int_df.to_dict(orient=orient)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDict:\n    def setup(self, orient):\n        data = np.random.randint(0, 1000, size=(10000, 4))\n        self.int_df = DataFrame(data)\n        self.datetimelike_df = self.int_df.astype(\"timedelta64[ns]\")",
-        "min_run_count": 2,
-        "name": "frame_methods.ToDict.time_to_dict_ints",
-        "number": 0,
-        "param_names": [
-            "orient"
-        ],
-        "params": [
-            [
-                "'dict'",
-                "'list'",
-                "'series'",
-                "'split'",
-                "'records'",
-                "'index'"
-            ]
-        ],
-        "repeat": 0,
-        "rounds": 2,
-        "sample_time": 0.01,
-        "timeout": 60.0,
-        "type": "time",
-        "unit": "seconds",
-        "version": "8ca05db38583b86c56e9781a0ba1f399533c5e196accee6737c23ade9750f5c9",
-        "warmup_time": -1
-    },
     "frame_methods.ToHTML.time_to_html_mixed": {
         "code": "class ToHTML:\n    def time_to_html_mixed(self):\n        self.df2.to_html()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToHTML:\n    def setup(self):\n        nrows = 500\n        self.df2 = DataFrame(np.random.randn(nrows, 10))\n        self.df2[0] = period_range(\"2000\", periods=nrows)\n        self.df2[1] = range(nrows)",
         "min_run_count": 2,
@@ -7213,6 +7159,38 @@
         "type": "time",
         "unit": "seconds",
         "version": "27eec9eb147be5e17060fa041b6bf1efd02796180cd220cc1fdf9bc7a2489e95",
+        "warmup_time": -1
+    },
+    "groupby.Sample.time_sample": {
+        "code": "class Sample:\n    def time_sample(self):\n        self.df.groupby(self.groups).sample(n=1)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Sample:\n    def setup(self):\n        N = 10 ** 3\n        self.df = DataFrame({\"a\": np.zeros(N)})\n        self.groups = np.arange(0, N)\n        self.weights = np.ones(N)",
+        "min_run_count": 2,
+        "name": "groupby.Sample.time_sample",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "68b221d9354662a3ba5d7d1b908212f1bc335cd123e2fe19c4b5e622fedd9a05",
+        "warmup_time": -1
+    },
+    "groupby.Sample.time_sample_weights": {
+        "code": "class Sample:\n    def time_sample_weights(self):\n        self.df.groupby(self.groups).sample(n=1, weights=self.weights)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Sample:\n    def setup(self):\n        N = 10 ** 3\n        self.df = DataFrame({\"a\": np.zeros(N)})\n        self.groups = np.arange(0, N)\n        self.weights = np.ones(N)",
+        "min_run_count": 2,
+        "name": "groupby.Sample.time_sample_weights",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "a7283f19c2b6a59ca16073736d734d079f709382c04db333b0b0bf62b5a398ca",
         "warmup_time": -1
     },
     "groupby.Size.time_category_size": {
@@ -16037,6 +16015,29 @@
         "type": "time",
         "unit": "seconds",
         "version": "30880eb453b9d41a953d95fc25ba24088b0a48b94ab49ea12406e4abc0b976ac",
+        "warmup_time": -1
+    },
+    "rolling.TableMethod.time_ewm_mean": {
+        "code": "class TableMethod:\n    def time_ewm_mean(self, method):\n        self.df.ewm(1, method=method).mean(engine=\"numba\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass TableMethod:\n    def setup(self, method):\n        self.df = pd.DataFrame(np.random.randn(10, 1000))",
+        "min_run_count": 2,
+        "name": "rolling.TableMethod.time_ewm_mean",
+        "number": 0,
+        "param_names": [
+            "method"
+        ],
+        "params": [
+            [
+                "'single'",
+                "'table'"
+            ]
+        ],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "446dcdc251bda1381a3cf943305e8a6a22ea15ca4513ec2dc7454a8692ab99ad",
         "warmup_time": -1
     },
     "rolling.VariableWindowMethods.peakmem_rolling": {
