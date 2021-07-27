@@ -15235,7 +15235,7 @@
         "warmup_time": -1
     },
     "reshape.Unstack.time_full_product": {
-        "code": "class Unstack:\n    def time_full_product(self, dtype):\n        self.df.unstack()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Unstack:\n    def setup(self, dtype):\n        m = 100\n        n = 1000\n    \n        levels = np.arange(m)\n        index = MultiIndex.from_product([levels] * 2)\n        columns = np.arange(n)\n        if dtype == \"int\":\n            values = np.arange(m * m * n).reshape(m * m, n)\n        else:\n            # the category branch is ~20x slower than int. So we\n            # cut down the size a bit. Now it's only ~3x slower.\n            n = 50\n            columns = columns[:n]\n            indices = np.random.randint(0, 52, size=(m * m, n))\n            values = np.take(list(string.ascii_letters), indices)\n            values = [pd.Categorical(v) for v in values.T]\n    \n        self.df = DataFrame(values, index, columns)\n        self.df2 = self.df.iloc[:-1]",
+        "code": "class Unstack:\n    def time_full_product(self, dtype):\n        self.df.unstack()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Unstack:\n    def setup(self, dtype):\n        m = 100\n        n = 1000\n    \n        levels = np.arange(m)\n        index = MultiIndex.from_product([levels] * 2)\n        columns = np.arange(n)\n        if dtype == \"int\":\n            values = np.arange(m * m * n).reshape(m * m, n)\n            self.df = DataFrame(values, index, columns)\n        else:\n            # the category branch is ~20x slower than int. So we\n            # cut down the size a bit. Now it's only ~3x slower.\n            n = 50\n            columns = columns[:n]\n            indices = np.random.randint(0, 52, size=(m * m, n))\n            values = np.take(list(string.ascii_letters), indices)\n            values = [pd.Categorical(v) for v in values.T]\n    \n            self.df = DataFrame(\n                {i: cat for i, cat in enumerate(values)}, index, columns\n            )\n    \n        self.df2 = self.df.iloc[:-1]",
         "min_run_count": 2,
         "name": "reshape.Unstack.time_full_product",
         "number": 0,
@@ -15254,11 +15254,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "982c58ab79075f560f37142b37fa5bdb762637f322784ec88c52422d484eab2f",
+        "version": "f5e62e0092d74cb1b148dcb165576dc7e40150a556d605e500de44e987cfc89f",
         "warmup_time": -1
     },
     "reshape.Unstack.time_without_last_row": {
-        "code": "class Unstack:\n    def time_without_last_row(self, dtype):\n        self.df2.unstack()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Unstack:\n    def setup(self, dtype):\n        m = 100\n        n = 1000\n    \n        levels = np.arange(m)\n        index = MultiIndex.from_product([levels] * 2)\n        columns = np.arange(n)\n        if dtype == \"int\":\n            values = np.arange(m * m * n).reshape(m * m, n)\n        else:\n            # the category branch is ~20x slower than int. So we\n            # cut down the size a bit. Now it's only ~3x slower.\n            n = 50\n            columns = columns[:n]\n            indices = np.random.randint(0, 52, size=(m * m, n))\n            values = np.take(list(string.ascii_letters), indices)\n            values = [pd.Categorical(v) for v in values.T]\n    \n        self.df = DataFrame(values, index, columns)\n        self.df2 = self.df.iloc[:-1]",
+        "code": "class Unstack:\n    def time_without_last_row(self, dtype):\n        self.df2.unstack()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Unstack:\n    def setup(self, dtype):\n        m = 100\n        n = 1000\n    \n        levels = np.arange(m)\n        index = MultiIndex.from_product([levels] * 2)\n        columns = np.arange(n)\n        if dtype == \"int\":\n            values = np.arange(m * m * n).reshape(m * m, n)\n            self.df = DataFrame(values, index, columns)\n        else:\n            # the category branch is ~20x slower than int. So we\n            # cut down the size a bit. Now it's only ~3x slower.\n            n = 50\n            columns = columns[:n]\n            indices = np.random.randint(0, 52, size=(m * m, n))\n            values = np.take(list(string.ascii_letters), indices)\n            values = [pd.Categorical(v) for v in values.T]\n    \n            self.df = DataFrame(\n                {i: cat for i, cat in enumerate(values)}, index, columns\n            )\n    \n        self.df2 = self.df.iloc[:-1]",
         "min_run_count": 2,
         "name": "reshape.Unstack.time_without_last_row",
         "number": 0,
@@ -15277,7 +15277,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "fed64ea6b5e5d2b0f96b3269cde322b19c66fdb9dab9c8388ae93000bcbbf38f",
+        "version": "8c8cd57809171d106187023a3e108c86bf282887838b049335b9f497e2e50df4",
         "warmup_time": -1
     },
     "reshape.WideToLong.time_wide_to_long_big": {
