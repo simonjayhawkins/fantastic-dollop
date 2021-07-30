@@ -7247,6 +7247,38 @@
         "version": "a7283f19c2b6a59ca16073736d734d079f709382c04db333b0b0bf62b5a398ca",
         "warmup_time": -1
     },
+    "groupby.Shift.time_defaults": {
+        "code": "class Shift:\n    def time_defaults(self):\n        self.df.groupby(\"g\").shift()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Shift:\n    def setup(self):\n        N = 18\n        self.df = DataFrame({\"g\": [\"a\", \"b\"] * 9, \"v\": list(range(N))})",
+        "min_run_count": 2,
+        "name": "groupby.Shift.time_defaults",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "6a3a41956cf53e5cacf8be90a4432268657d065e708f3681cb0da232d8442b7b",
+        "warmup_time": -1
+    },
+    "groupby.Shift.time_fill_value": {
+        "code": "class Shift:\n    def time_fill_value(self):\n        self.df.groupby(\"g\").shift(fill_value=99)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Shift:\n    def setup(self):\n        N = 18\n        self.df = DataFrame({\"g\": [\"a\", \"b\"] * 9, \"v\": list(range(N))})",
+        "min_run_count": 2,
+        "name": "groupby.Shift.time_fill_value",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "92e908ccaf513773d03d593373379bb94d333da277d2214a08ee1905d58e0c3b",
+        "warmup_time": -1
+    },
     "groupby.Size.time_category_size": {
         "code": "class Size:\n    def time_category_size(self):\n        self.draws.groupby(self.cats).size()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Size:\n    def setup(self):\n        n = 10 ** 5\n        offsets = np.random.randint(n, size=n).astype(\"timedelta64[ns]\")\n        dates = np.datetime64(\"now\") + offsets\n        self.df = DataFrame(\n            {\n                \"key1\": np.random.randint(0, 500, size=n),\n                \"key2\": np.random.randint(0, 100, size=n),\n                \"value1\": np.random.randn(n),\n                \"value2\": np.random.randn(n),\n                \"value3\": np.random.randn(n),\n                \"dates\": dates,\n            }\n        )\n        self.draws = Series(np.random.randn(n))\n        labels = Series([\"foo\", \"bar\", \"baz\", \"qux\"] * (n // 4))\n        self.cats = labels.astype(\"category\")",
         "min_run_count": 2,
