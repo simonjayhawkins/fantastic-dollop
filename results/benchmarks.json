@@ -4519,7 +4519,7 @@
         "warmup_time": -1
     },
     "frame_methods.Interpolate.time_interpolate": {
-        "code": "class Interpolate:\n    def time_interpolate(self, downcast):\n        self.df.interpolate(downcast=downcast)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Interpolate:\n    def setup(self, downcast):\n        N = 10000\n        # this is the worst case, where every column has NaNs.\n        self.df = DataFrame(np.random.randn(N, 100))\n        self.df.values[::2] = np.nan\n    \n        self.df2 = DataFrame(\n            {\n                \"A\": np.arange(0, N),\n                \"B\": np.random.randint(0, 100, N),\n                \"C\": np.random.randn(N),\n                \"D\": np.random.randn(N),\n            }\n        )\n        self.df2.loc[1::5, \"A\"] = np.nan\n        self.df2.loc[1::5, \"C\"] = np.nan",
+        "code": "class Interpolate:\n    def time_interpolate(self, downcast):\n        self.df.interpolate(downcast=downcast)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Interpolate:\n    def setup(self, downcast):\n        N = 10000\n        # this is the worst case, where every column has NaNs.\n        arr = np.random.randn(N, 100)\n        # NB: we need to set values in array, not in df.values, otherwise\n        #  the benchmark will be misleading for ArrayManager\n        arr[::2] = np.nan\n    \n        self.df = DataFrame(arr)\n    \n        self.df2 = DataFrame(\n            {\n                \"A\": np.arange(0, N),\n                \"B\": np.random.randint(0, 100, N),\n                \"C\": np.random.randn(N),\n                \"D\": np.random.randn(N),\n            }\n        )\n        self.df2.loc[1::5, \"A\"] = np.nan\n        self.df2.loc[1::5, \"C\"] = np.nan",
         "min_run_count": 2,
         "name": "frame_methods.Interpolate.time_interpolate",
         "number": 0,
@@ -4538,11 +4538,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "4b928f7a79c9835976b403618626454cdc80c21d09e08bb25ea3e1db1ab73d5d",
+        "version": "772e1716ebd0b46c5a1414657afc3917f5a8ea0f258df3ea3261ce0eaf02ee55",
         "warmup_time": -1
     },
     "frame_methods.Interpolate.time_interpolate_some_good": {
-        "code": "class Interpolate:\n    def time_interpolate_some_good(self, downcast):\n        self.df2.interpolate(downcast=downcast)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Interpolate:\n    def setup(self, downcast):\n        N = 10000\n        # this is the worst case, where every column has NaNs.\n        self.df = DataFrame(np.random.randn(N, 100))\n        self.df.values[::2] = np.nan\n    \n        self.df2 = DataFrame(\n            {\n                \"A\": np.arange(0, N),\n                \"B\": np.random.randint(0, 100, N),\n                \"C\": np.random.randn(N),\n                \"D\": np.random.randn(N),\n            }\n        )\n        self.df2.loc[1::5, \"A\"] = np.nan\n        self.df2.loc[1::5, \"C\"] = np.nan",
+        "code": "class Interpolate:\n    def time_interpolate_some_good(self, downcast):\n        self.df2.interpolate(downcast=downcast)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Interpolate:\n    def setup(self, downcast):\n        N = 10000\n        # this is the worst case, where every column has NaNs.\n        arr = np.random.randn(N, 100)\n        # NB: we need to set values in array, not in df.values, otherwise\n        #  the benchmark will be misleading for ArrayManager\n        arr[::2] = np.nan\n    \n        self.df = DataFrame(arr)\n    \n        self.df2 = DataFrame(\n            {\n                \"A\": np.arange(0, N),\n                \"B\": np.random.randint(0, 100, N),\n                \"C\": np.random.randn(N),\n                \"D\": np.random.randn(N),\n            }\n        )\n        self.df2.loc[1::5, \"A\"] = np.nan\n        self.df2.loc[1::5, \"C\"] = np.nan",
         "min_run_count": 2,
         "name": "frame_methods.Interpolate.time_interpolate_some_good",
         "number": 0,
@@ -4561,7 +4561,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "071676fb895adae558ef0f3d812967f876c29557965de723c0969cce756a7124",
+        "version": "815fbe5f668a27ab8708fc47157cc8edac28bf78e7cfc2776ef6a1c5c73832ae",
         "warmup_time": -1
     },
     "frame_methods.Isnull.time_isnull": {
