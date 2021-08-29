@@ -3852,8 +3852,24 @@
         "version": "225c22c0601994be668586bdb257030c2fd0d83e6dec0712bd820db812484318",
         "warmup_time": -1
     },
+    "frame_ctor.FromDicts.time_dict_of_categoricals": {
+        "code": "class FromDicts:\n    def time_dict_of_categoricals(self):\n        # dict of arrays that we wont consolidate\n        DataFrame(self.dict_of_categoricals)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass FromDicts:\n    def setup(self):\n        N, K = 5000, 50\n        self.index = tm.makeStringIndex(N)\n        self.columns = tm.makeStringIndex(K)\n        frame = DataFrame(np.random.randn(N, K), index=self.index, columns=self.columns)\n        self.data = frame.to_dict()\n        self.dict_list = frame.to_dict(orient=\"records\")\n        self.data2 = {i: {j: float(j) for j in range(100)} for i in range(2000)}\n    \n        # arrays which we wont consolidate\n        self.dict_of_categoricals = {i: Categorical(np.arange(N)) for i in range(K)}",
+        "min_run_count": 2,
+        "name": "frame_ctor.FromDicts.time_dict_of_categoricals",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "d01992efc85d7a9662ce1a58161e208f88df81334987a941b69447164a2f384f",
+        "warmup_time": -1
+    },
     "frame_ctor.FromDicts.time_list_of_dict": {
-        "code": "class FromDicts:\n    def time_list_of_dict(self):\n        DataFrame(self.dict_list)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass FromDicts:\n    def setup(self):\n        N, K = 5000, 50\n        self.index = tm.makeStringIndex(N)\n        self.columns = tm.makeStringIndex(K)\n        frame = DataFrame(np.random.randn(N, K), index=self.index, columns=self.columns)\n        self.data = frame.to_dict()\n        self.dict_list = frame.to_dict(orient=\"records\")\n        self.data2 = {i: {j: float(j) for j in range(100)} for i in range(2000)}",
+        "code": "class FromDicts:\n    def time_list_of_dict(self):\n        DataFrame(self.dict_list)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass FromDicts:\n    def setup(self):\n        N, K = 5000, 50\n        self.index = tm.makeStringIndex(N)\n        self.columns = tm.makeStringIndex(K)\n        frame = DataFrame(np.random.randn(N, K), index=self.index, columns=self.columns)\n        self.data = frame.to_dict()\n        self.dict_list = frame.to_dict(orient=\"records\")\n        self.data2 = {i: {j: float(j) for j in range(100)} for i in range(2000)}\n    \n        # arrays which we wont consolidate\n        self.dict_of_categoricals = {i: Categorical(np.arange(N)) for i in range(K)}",
         "min_run_count": 2,
         "name": "frame_ctor.FromDicts.time_list_of_dict",
         "number": 0,
@@ -3865,11 +3881,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "174eb052795c507f4dc0358b6a6116384db4b9cc00ba3393cec67f14302e6f46",
+        "version": "dcaf083da69bfda97c9dd913d9c0df2926d7aa4b3f4c781f0600eaa2d2519e7f",
         "warmup_time": -1
     },
     "frame_ctor.FromDicts.time_nested_dict": {
-        "code": "class FromDicts:\n    def time_nested_dict(self):\n        DataFrame(self.data)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass FromDicts:\n    def setup(self):\n        N, K = 5000, 50\n        self.index = tm.makeStringIndex(N)\n        self.columns = tm.makeStringIndex(K)\n        frame = DataFrame(np.random.randn(N, K), index=self.index, columns=self.columns)\n        self.data = frame.to_dict()\n        self.dict_list = frame.to_dict(orient=\"records\")\n        self.data2 = {i: {j: float(j) for j in range(100)} for i in range(2000)}",
+        "code": "class FromDicts:\n    def time_nested_dict(self):\n        DataFrame(self.data)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass FromDicts:\n    def setup(self):\n        N, K = 5000, 50\n        self.index = tm.makeStringIndex(N)\n        self.columns = tm.makeStringIndex(K)\n        frame = DataFrame(np.random.randn(N, K), index=self.index, columns=self.columns)\n        self.data = frame.to_dict()\n        self.dict_list = frame.to_dict(orient=\"records\")\n        self.data2 = {i: {j: float(j) for j in range(100)} for i in range(2000)}\n    \n        # arrays which we wont consolidate\n        self.dict_of_categoricals = {i: Categorical(np.arange(N)) for i in range(K)}",
         "min_run_count": 2,
         "name": "frame_ctor.FromDicts.time_nested_dict",
         "number": 0,
@@ -3881,11 +3897,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "173d9370d58a7963078a185996862e2a5455bf3176668c3149143ced27574c1b",
+        "version": "add19204a6c10f08c630c4e64d888bc97ec4f42e45059f2abb2f9e42f53ff9df",
         "warmup_time": -1
     },
     "frame_ctor.FromDicts.time_nested_dict_columns": {
-        "code": "class FromDicts:\n    def time_nested_dict_columns(self):\n        DataFrame(self.data, columns=self.columns)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass FromDicts:\n    def setup(self):\n        N, K = 5000, 50\n        self.index = tm.makeStringIndex(N)\n        self.columns = tm.makeStringIndex(K)\n        frame = DataFrame(np.random.randn(N, K), index=self.index, columns=self.columns)\n        self.data = frame.to_dict()\n        self.dict_list = frame.to_dict(orient=\"records\")\n        self.data2 = {i: {j: float(j) for j in range(100)} for i in range(2000)}",
+        "code": "class FromDicts:\n    def time_nested_dict_columns(self):\n        DataFrame(self.data, columns=self.columns)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass FromDicts:\n    def setup(self):\n        N, K = 5000, 50\n        self.index = tm.makeStringIndex(N)\n        self.columns = tm.makeStringIndex(K)\n        frame = DataFrame(np.random.randn(N, K), index=self.index, columns=self.columns)\n        self.data = frame.to_dict()\n        self.dict_list = frame.to_dict(orient=\"records\")\n        self.data2 = {i: {j: float(j) for j in range(100)} for i in range(2000)}\n    \n        # arrays which we wont consolidate\n        self.dict_of_categoricals = {i: Categorical(np.arange(N)) for i in range(K)}",
         "min_run_count": 2,
         "name": "frame_ctor.FromDicts.time_nested_dict_columns",
         "number": 0,
@@ -3897,11 +3913,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "8d5177be5f9df0143c830e5a6ef1c1bf0a861a9a209aca391cd840d990806311",
+        "version": "5d026b31065518c4a5edf7a7df0533ed14f15a275fcfb9fe3427b1b37bcf28fb",
         "warmup_time": -1
     },
     "frame_ctor.FromDicts.time_nested_dict_index": {
-        "code": "class FromDicts:\n    def time_nested_dict_index(self):\n        DataFrame(self.data, index=self.index)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass FromDicts:\n    def setup(self):\n        N, K = 5000, 50\n        self.index = tm.makeStringIndex(N)\n        self.columns = tm.makeStringIndex(K)\n        frame = DataFrame(np.random.randn(N, K), index=self.index, columns=self.columns)\n        self.data = frame.to_dict()\n        self.dict_list = frame.to_dict(orient=\"records\")\n        self.data2 = {i: {j: float(j) for j in range(100)} for i in range(2000)}",
+        "code": "class FromDicts:\n    def time_nested_dict_index(self):\n        DataFrame(self.data, index=self.index)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass FromDicts:\n    def setup(self):\n        N, K = 5000, 50\n        self.index = tm.makeStringIndex(N)\n        self.columns = tm.makeStringIndex(K)\n        frame = DataFrame(np.random.randn(N, K), index=self.index, columns=self.columns)\n        self.data = frame.to_dict()\n        self.dict_list = frame.to_dict(orient=\"records\")\n        self.data2 = {i: {j: float(j) for j in range(100)} for i in range(2000)}\n    \n        # arrays which we wont consolidate\n        self.dict_of_categoricals = {i: Categorical(np.arange(N)) for i in range(K)}",
         "min_run_count": 2,
         "name": "frame_ctor.FromDicts.time_nested_dict_index",
         "number": 0,
@@ -3913,11 +3929,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "e4de974e68f207a130f9c4bf99fb8fe2bcef63392850edff24c2a2a7a4573624",
+        "version": "0334c078a76266740420bbe2d4f06d42c8d354ce222c047d8e889c7782f1d0fb",
         "warmup_time": -1
     },
     "frame_ctor.FromDicts.time_nested_dict_index_columns": {
-        "code": "class FromDicts:\n    def time_nested_dict_index_columns(self):\n        DataFrame(self.data, index=self.index, columns=self.columns)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass FromDicts:\n    def setup(self):\n        N, K = 5000, 50\n        self.index = tm.makeStringIndex(N)\n        self.columns = tm.makeStringIndex(K)\n        frame = DataFrame(np.random.randn(N, K), index=self.index, columns=self.columns)\n        self.data = frame.to_dict()\n        self.dict_list = frame.to_dict(orient=\"records\")\n        self.data2 = {i: {j: float(j) for j in range(100)} for i in range(2000)}",
+        "code": "class FromDicts:\n    def time_nested_dict_index_columns(self):\n        DataFrame(self.data, index=self.index, columns=self.columns)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass FromDicts:\n    def setup(self):\n        N, K = 5000, 50\n        self.index = tm.makeStringIndex(N)\n        self.columns = tm.makeStringIndex(K)\n        frame = DataFrame(np.random.randn(N, K), index=self.index, columns=self.columns)\n        self.data = frame.to_dict()\n        self.dict_list = frame.to_dict(orient=\"records\")\n        self.data2 = {i: {j: float(j) for j in range(100)} for i in range(2000)}\n    \n        # arrays which we wont consolidate\n        self.dict_of_categoricals = {i: Categorical(np.arange(N)) for i in range(K)}",
         "min_run_count": 2,
         "name": "frame_ctor.FromDicts.time_nested_dict_index_columns",
         "number": 0,
@@ -3929,11 +3945,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "28e021b94e59b70570604850a6452738a47585b1d327e348613f34f11452a3eb",
+        "version": "97b59f84808d3276d1488dee6b4d3f8feba11d796df6eddc2ff63e3338d08f6e",
         "warmup_time": -1
     },
     "frame_ctor.FromDicts.time_nested_dict_int64": {
-        "code": "class FromDicts:\n    def time_nested_dict_int64(self):\n        # nested dict, integer indexes, regression described in #621\n        DataFrame(self.data2)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass FromDicts:\n    def setup(self):\n        N, K = 5000, 50\n        self.index = tm.makeStringIndex(N)\n        self.columns = tm.makeStringIndex(K)\n        frame = DataFrame(np.random.randn(N, K), index=self.index, columns=self.columns)\n        self.data = frame.to_dict()\n        self.dict_list = frame.to_dict(orient=\"records\")\n        self.data2 = {i: {j: float(j) for j in range(100)} for i in range(2000)}",
+        "code": "class FromDicts:\n    def time_nested_dict_int64(self):\n        # nested dict, integer indexes, regression described in #621\n        DataFrame(self.data2)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass FromDicts:\n    def setup(self):\n        N, K = 5000, 50\n        self.index = tm.makeStringIndex(N)\n        self.columns = tm.makeStringIndex(K)\n        frame = DataFrame(np.random.randn(N, K), index=self.index, columns=self.columns)\n        self.data = frame.to_dict()\n        self.dict_list = frame.to_dict(orient=\"records\")\n        self.data2 = {i: {j: float(j) for j in range(100)} for i in range(2000)}\n    \n        # arrays which we wont consolidate\n        self.dict_of_categoricals = {i: Categorical(np.arange(N)) for i in range(K)}",
         "min_run_count": 2,
         "name": "frame_ctor.FromDicts.time_nested_dict_int64",
         "number": 0,
@@ -3945,7 +3961,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "6daf6b113ecbae4883b3e70df8a2095a2e9d9b5c9b6a1a983724ab35daec303c",
+        "version": "ee2910c901abc0fb56b4210fd59f762830b4a53fea3918a1807e65d6dbd12112",
         "warmup_time": -1
     },
     "frame_ctor.FromDictwithTimestamp.time_dict_with_timestamp_offsets": {
@@ -6722,14 +6738,15 @@
         "warmup_time": -1
     },
     "groupby.GroupByMethods.time_dtype_as_field": {
-        "code": "class GroupByMethods:\n    def time_dtype_as_field(self, dtype, method, application):\n        self.as_field_method()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass GroupByMethods:\n    def setup(self, dtype, method, application):\n        if method in method_blocklist.get(dtype, {}):\n            raise NotImplementedError  # skip benchmark\n        ngroups = 1000\n        size = ngroups * 2\n        rng = np.arange(ngroups)\n        values = rng.take(np.random.randint(0, ngroups, size=size))\n        if dtype == \"int\":\n            key = np.random.randint(0, size, size=size)\n        elif dtype == \"uint\":\n            key = np.random.randint(0, size, size=size, dtype=dtype)\n        elif dtype == \"float\":\n            key = np.concatenate(\n                [np.random.random(ngroups) * 0.1, np.random.random(ngroups) * 10.0]\n            )\n        elif dtype == \"object\":\n            key = [\"foo\"] * size\n        elif dtype == \"datetime\":\n            key = date_range(\"1/1/2011\", periods=size, freq=\"s\")\n    \n        df = DataFrame({\"values\": values, \"key\": key})\n    \n        if application == \"transform\":\n            if method == \"describe\":\n                raise NotImplementedError\n    \n            self.as_group_method = lambda: df.groupby(\"key\")[\"values\"].transform(method)\n            self.as_field_method = lambda: df.groupby(\"values\")[\"key\"].transform(method)\n        else:\n            self.as_group_method = getattr(df.groupby(\"key\")[\"values\"], method)\n            self.as_field_method = getattr(df.groupby(\"values\")[\"key\"], method)",
+        "code": "class GroupByMethods:\n    def time_dtype_as_field(self, dtype, method, application, ncols):\n        self.as_field_method()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass GroupByMethods:\n    def setup(self, dtype, method, application, ncols):\n        if method in method_blocklist.get(dtype, {}):\n            raise NotImplementedError  # skip benchmark\n    \n        if ncols != 1 and method in [\"value_counts\", \"unique\"]:\n            # DataFrameGroupBy doesn't have these methods\n            raise NotImplementedError\n    \n        ngroups = 1000\n        size = ngroups * 2\n        rng = np.arange(ngroups).reshape(-1, 1)\n        rng = np.broadcast_to(rng, (len(rng), ncols))\n        taker = np.random.randint(0, ngroups, size=size)\n        values = rng.take(taker, axis=0)\n        if dtype == \"int\":\n            key = np.random.randint(0, size, size=size)\n        elif dtype == \"uint\":\n            key = np.random.randint(0, size, size=size, dtype=dtype)\n        elif dtype == \"float\":\n            key = np.concatenate(\n                [np.random.random(ngroups) * 0.1, np.random.random(ngroups) * 10.0]\n            )\n        elif dtype == \"object\":\n            key = [\"foo\"] * size\n        elif dtype == \"datetime\":\n            key = date_range(\"1/1/2011\", periods=size, freq=\"s\")\n    \n        cols = [f\"values{n}\" for n in range(ncols)]\n        df = DataFrame(values, columns=cols)\n        df[\"key\"] = key\n    \n        if len(cols) == 1:\n            cols = cols[0]\n    \n        if application == \"transform\":\n            if method == \"describe\":\n                raise NotImplementedError\n    \n            self.as_group_method = lambda: df.groupby(\"key\")[cols].transform(method)\n            self.as_field_method = lambda: df.groupby(cols)[\"key\"].transform(method)\n        else:\n            self.as_group_method = getattr(df.groupby(\"key\")[cols], method)\n            self.as_field_method = getattr(df.groupby(cols)[\"key\"], method)",
         "min_run_count": 2,
         "name": "groupby.GroupByMethods.time_dtype_as_field",
         "number": 0,
         "param_names": [
             "dtype",
             "method",
-            "application"
+            "application",
+            "ncols"
         ],
         "params": [
             [
@@ -6778,6 +6795,12 @@
             [
                 "'direct'",
                 "'transformation'"
+            ],
+            [
+                "1",
+                "2",
+                "5",
+                "10"
             ]
         ],
         "repeat": 0,
@@ -6786,18 +6809,19 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "2e5821366457ad7dec8094df470d49f3ff4f7aa84ab0e701e0e8af952e1d872c",
+        "version": "5ea7cd12f5f2450b503062738f058e0c3486677a8db09522816f84609d0b612a",
         "warmup_time": -1
     },
     "groupby.GroupByMethods.time_dtype_as_group": {
-        "code": "class GroupByMethods:\n    def time_dtype_as_group(self, dtype, method, application):\n        self.as_group_method()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass GroupByMethods:\n    def setup(self, dtype, method, application):\n        if method in method_blocklist.get(dtype, {}):\n            raise NotImplementedError  # skip benchmark\n        ngroups = 1000\n        size = ngroups * 2\n        rng = np.arange(ngroups)\n        values = rng.take(np.random.randint(0, ngroups, size=size))\n        if dtype == \"int\":\n            key = np.random.randint(0, size, size=size)\n        elif dtype == \"uint\":\n            key = np.random.randint(0, size, size=size, dtype=dtype)\n        elif dtype == \"float\":\n            key = np.concatenate(\n                [np.random.random(ngroups) * 0.1, np.random.random(ngroups) * 10.0]\n            )\n        elif dtype == \"object\":\n            key = [\"foo\"] * size\n        elif dtype == \"datetime\":\n            key = date_range(\"1/1/2011\", periods=size, freq=\"s\")\n    \n        df = DataFrame({\"values\": values, \"key\": key})\n    \n        if application == \"transform\":\n            if method == \"describe\":\n                raise NotImplementedError\n    \n            self.as_group_method = lambda: df.groupby(\"key\")[\"values\"].transform(method)\n            self.as_field_method = lambda: df.groupby(\"values\")[\"key\"].transform(method)\n        else:\n            self.as_group_method = getattr(df.groupby(\"key\")[\"values\"], method)\n            self.as_field_method = getattr(df.groupby(\"values\")[\"key\"], method)",
+        "code": "class GroupByMethods:\n    def time_dtype_as_group(self, dtype, method, application, ncols):\n        self.as_group_method()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass GroupByMethods:\n    def setup(self, dtype, method, application, ncols):\n        if method in method_blocklist.get(dtype, {}):\n            raise NotImplementedError  # skip benchmark\n    \n        if ncols != 1 and method in [\"value_counts\", \"unique\"]:\n            # DataFrameGroupBy doesn't have these methods\n            raise NotImplementedError\n    \n        ngroups = 1000\n        size = ngroups * 2\n        rng = np.arange(ngroups).reshape(-1, 1)\n        rng = np.broadcast_to(rng, (len(rng), ncols))\n        taker = np.random.randint(0, ngroups, size=size)\n        values = rng.take(taker, axis=0)\n        if dtype == \"int\":\n            key = np.random.randint(0, size, size=size)\n        elif dtype == \"uint\":\n            key = np.random.randint(0, size, size=size, dtype=dtype)\n        elif dtype == \"float\":\n            key = np.concatenate(\n                [np.random.random(ngroups) * 0.1, np.random.random(ngroups) * 10.0]\n            )\n        elif dtype == \"object\":\n            key = [\"foo\"] * size\n        elif dtype == \"datetime\":\n            key = date_range(\"1/1/2011\", periods=size, freq=\"s\")\n    \n        cols = [f\"values{n}\" for n in range(ncols)]\n        df = DataFrame(values, columns=cols)\n        df[\"key\"] = key\n    \n        if len(cols) == 1:\n            cols = cols[0]\n    \n        if application == \"transform\":\n            if method == \"describe\":\n                raise NotImplementedError\n    \n            self.as_group_method = lambda: df.groupby(\"key\")[cols].transform(method)\n            self.as_field_method = lambda: df.groupby(cols)[\"key\"].transform(method)\n        else:\n            self.as_group_method = getattr(df.groupby(\"key\")[cols], method)\n            self.as_field_method = getattr(df.groupby(cols)[\"key\"], method)",
         "min_run_count": 2,
         "name": "groupby.GroupByMethods.time_dtype_as_group",
         "number": 0,
         "param_names": [
             "dtype",
             "method",
-            "application"
+            "application",
+            "ncols"
         ],
         "params": [
             [
@@ -6846,6 +6870,12 @@
             [
                 "'direct'",
                 "'transformation'"
+            ],
+            [
+                "1",
+                "2",
+                "5",
+                "10"
             ]
         ],
         "repeat": 0,
@@ -6854,7 +6884,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "f1c5c93cb08e5c79fa3f5bda8dbbd9d0248bd3f1183f3b219e5c5fa4d7a184bb",
+        "version": "de1a3fd6713ac1958b0b2e8ddcd8bd0cf3b8986667886395e023663a956d0167",
         "warmup_time": -1
     },
     "groupby.GroupManyLabels.time_sum": {
@@ -9061,7 +9091,7 @@
         "warmup_time": -1
     },
     "indexing.InsertColumns.time_assign_list_like_with_setitem": {
-        "code": "class InsertColumns:\n    def time_assign_list_like_with_setitem(self):\n        self.df[list(range(100))] = np.random.randn(self.N, 100)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass InsertColumns:\n    def setup(self):\n        self.N = 10 ** 3\n        self.df = DataFrame(index=range(self.N))",
+        "code": "class InsertColumns:\n    def time_assign_list_like_with_setitem(self):\n        self.df[list(range(100))] = np.random.randn(self.N, 100)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass InsertColumns:\n    def setup(self):\n        self.N = 10 ** 3\n        self.df = DataFrame(index=range(self.N))\n        self.df2 = DataFrame(np.random.randn(self.N, 2))",
         "min_run_count": 2,
         "name": "indexing.InsertColumns.time_assign_list_like_with_setitem",
         "number": 0,
@@ -9073,11 +9103,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "f5c977a84b67c7bc7e089e88b954203a2fc418585fcc4bf2a8ae28a56265f8ce",
+        "version": "f0d20ae0b7ecbf875b6212af9100e57c2d7a858d5391e0335ad66af6913bbf27",
         "warmup_time": -1
     },
     "indexing.InsertColumns.time_assign_list_of_columns_concat": {
-        "code": "class InsertColumns:\n    def time_assign_list_of_columns_concat(self):\n        df = DataFrame(np.random.randn(self.N, 100))\n        concat([self.df, df], axis=1)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass InsertColumns:\n    def setup(self):\n        self.N = 10 ** 3\n        self.df = DataFrame(index=range(self.N))",
+        "code": "class InsertColumns:\n    def time_assign_list_of_columns_concat(self):\n        df = DataFrame(np.random.randn(self.N, 100))\n        concat([self.df, df], axis=1)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass InsertColumns:\n    def setup(self):\n        self.N = 10 ** 3\n        self.df = DataFrame(index=range(self.N))\n        self.df2 = DataFrame(np.random.randn(self.N, 2))",
         "min_run_count": 2,
         "name": "indexing.InsertColumns.time_assign_list_of_columns_concat",
         "number": 0,
@@ -9089,11 +9119,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "c5436fc343cc9bcf0b460139b8a82685b5d71c4b101064f10728e9ece018f2b4",
+        "version": "6488498fda2f541b42e29ae2312eb8b360958157a907be27ddf5b34c0161a937",
         "warmup_time": -1
     },
     "indexing.InsertColumns.time_assign_with_setitem": {
-        "code": "class InsertColumns:\n    def time_assign_with_setitem(self):\n        for i in range(100):\n            self.df[i] = np.random.randn(self.N)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass InsertColumns:\n    def setup(self):\n        self.N = 10 ** 3\n        self.df = DataFrame(index=range(self.N))",
+        "code": "class InsertColumns:\n    def time_assign_with_setitem(self):\n        for i in range(100):\n            self.df[i] = np.random.randn(self.N)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass InsertColumns:\n    def setup(self):\n        self.N = 10 ** 3\n        self.df = DataFrame(index=range(self.N))\n        self.df2 = DataFrame(np.random.randn(self.N, 2))",
         "min_run_count": 2,
         "name": "indexing.InsertColumns.time_assign_with_setitem",
         "number": 0,
@@ -9105,11 +9135,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "444ec09c04aff55bcc0bb7c588f08c222ef3a780a4df03da7ee3c30431d98c73",
+        "version": "d9df947877603c72bff457f468a97b02417e92607d132780d6b770f71ccd5508",
         "warmup_time": -1
     },
     "indexing.InsertColumns.time_insert": {
-        "code": "class InsertColumns:\n    def time_insert(self):\n        for i in range(100):\n            self.df.insert(0, i, np.random.randn(self.N), allow_duplicates=True)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass InsertColumns:\n    def setup(self):\n        self.N = 10 ** 3\n        self.df = DataFrame(index=range(self.N))",
+        "code": "class InsertColumns:\n    def time_insert(self):\n        for i in range(100):\n            self.df.insert(0, i, np.random.randn(self.N), allow_duplicates=True)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass InsertColumns:\n    def setup(self):\n        self.N = 10 ** 3\n        self.df = DataFrame(index=range(self.N))\n        self.df2 = DataFrame(np.random.randn(self.N, 2))",
         "min_run_count": 2,
         "name": "indexing.InsertColumns.time_insert",
         "number": 0,
@@ -9121,7 +9151,23 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "95d1b5bc84a07a8661e73ea56178db44f5b93d5a196be3f24ae024c9bec55af2",
+        "version": "c675f1a116c9426fda23d329fa7028edc751ccc723eb90e0ac0a9fd5737d1e9e",
+        "warmup_time": -1
+    },
+    "indexing.InsertColumns.time_insert_middle": {
+        "code": "class InsertColumns:\n    def time_insert_middle(self):\n        # same as time_insert but inserting to a middle column rather than\n        #  front or back (which have fast-paths)\n        for i in range(100):\n            self.df2.insert(\n                1, \"colname\", np.random.randn(self.N), allow_duplicates=True\n            )\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass InsertColumns:\n    def setup(self):\n        self.N = 10 ** 3\n        self.df = DataFrame(index=range(self.N))\n        self.df2 = DataFrame(np.random.randn(self.N, 2))",
+        "min_run_count": 2,
+        "name": "indexing.InsertColumns.time_insert_middle",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "0682502ad9f0ccf074a147a9f6d4babd27f606e4ad4c6293f39973b96af77470",
         "warmup_time": -1
     },
     "indexing.IntervalIndexing.time_getitem_list": {
@@ -10725,7 +10771,8 @@
         "params": [
             [
                 "'c'",
-                "'python'"
+                "'python'",
+                "'pyarrow'"
             ]
         ],
         "repeat": 0,
@@ -10748,7 +10795,8 @@
         "params": [
             [
                 "'c'",
-                "'python'"
+                "'python'",
+                "'pyarrow'"
             ]
         ],
         "repeat": 0,
@@ -10936,7 +10984,8 @@
             ],
             [
                 "'c'",
-                "'python'"
+                "'python'",
+                "'pyarrow'"
             ]
         ],
         "repeat": 0,
