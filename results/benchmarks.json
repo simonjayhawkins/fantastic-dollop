@@ -10159,7 +10159,7 @@
         "warmup_time": -1
     },
     "inference.ToDatetimeFromIntsFloats.time_nanosec_float64": {
-        "code": "class ToDatetimeFromIntsFloats:\n    def time_nanosec_float64(self):\n        to_datetime(self.ts_nanosec_float, unit=\"ns\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeFromIntsFloats:\n    def setup(self):\n        self.ts_sec = Series(range(1521080307, 1521685107), dtype=\"int64\")\n        self.ts_sec_float = self.ts_sec.astype(\"float64\")\n    \n        self.ts_nanosec = 1_000_000 * self.ts_sec\n        self.ts_nanosec_float = self.ts_nanosec.astype(\"float64\")",
+        "code": "class ToDatetimeFromIntsFloats:\n    def time_nanosec_float64(self):\n        to_datetime(self.ts_nanosec_float, unit=\"ns\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeFromIntsFloats:\n    def setup(self):\n        self.ts_sec = Series(range(1521080307, 1521685107), dtype=\"int64\")\n        self.ts_sec_uint = Series(range(1521080307, 1521685107), dtype=\"uint64\")\n        self.ts_sec_float = self.ts_sec.astype(\"float64\")\n    \n        self.ts_nanosec = 1_000_000 * self.ts_sec\n        self.ts_nanosec_uint = 1_000_000 * self.ts_sec_uint\n        self.ts_nanosec_float = self.ts_nanosec.astype(\"float64\")",
         "min_run_count": 2,
         "name": "inference.ToDatetimeFromIntsFloats.time_nanosec_float64",
         "number": 0,
@@ -10171,11 +10171,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "d5ab2078d2af2a504c6a744af7926e9fdc2b2c6a77f432f02a9a01ea0952666b",
+        "version": "2a6fbb3b51b828848e8d7f73b076d8fae1161c6e4d53f48a8c4524fb4bd1820e",
         "warmup_time": -1
     },
     "inference.ToDatetimeFromIntsFloats.time_nanosec_int64": {
-        "code": "class ToDatetimeFromIntsFloats:\n    def time_nanosec_int64(self):\n        to_datetime(self.ts_nanosec, unit=\"ns\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeFromIntsFloats:\n    def setup(self):\n        self.ts_sec = Series(range(1521080307, 1521685107), dtype=\"int64\")\n        self.ts_sec_float = self.ts_sec.astype(\"float64\")\n    \n        self.ts_nanosec = 1_000_000 * self.ts_sec\n        self.ts_nanosec_float = self.ts_nanosec.astype(\"float64\")",
+        "code": "class ToDatetimeFromIntsFloats:\n    def time_nanosec_int64(self):\n        to_datetime(self.ts_nanosec, unit=\"ns\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeFromIntsFloats:\n    def setup(self):\n        self.ts_sec = Series(range(1521080307, 1521685107), dtype=\"int64\")\n        self.ts_sec_uint = Series(range(1521080307, 1521685107), dtype=\"uint64\")\n        self.ts_sec_float = self.ts_sec.astype(\"float64\")\n    \n        self.ts_nanosec = 1_000_000 * self.ts_sec\n        self.ts_nanosec_uint = 1_000_000 * self.ts_sec_uint\n        self.ts_nanosec_float = self.ts_nanosec.astype(\"float64\")",
         "min_run_count": 2,
         "name": "inference.ToDatetimeFromIntsFloats.time_nanosec_int64",
         "number": 0,
@@ -10187,11 +10187,27 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "4ba3cee4bcbc0f2d6bd3fcbe1e518ba7914cfbc27a8dc4e086f41a226ed859bc",
+        "version": "8970f8a6a15aef3813dcea5bb9bf3a7c39853f92d88c59907ac2830fd16daef2",
+        "warmup_time": -1
+    },
+    "inference.ToDatetimeFromIntsFloats.time_nanosec_uint64": {
+        "code": "class ToDatetimeFromIntsFloats:\n    def time_nanosec_uint64(self):\n        to_datetime(self.ts_nanosec_uint, unit=\"ns\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeFromIntsFloats:\n    def setup(self):\n        self.ts_sec = Series(range(1521080307, 1521685107), dtype=\"int64\")\n        self.ts_sec_uint = Series(range(1521080307, 1521685107), dtype=\"uint64\")\n        self.ts_sec_float = self.ts_sec.astype(\"float64\")\n    \n        self.ts_nanosec = 1_000_000 * self.ts_sec\n        self.ts_nanosec_uint = 1_000_000 * self.ts_sec_uint\n        self.ts_nanosec_float = self.ts_nanosec.astype(\"float64\")",
+        "min_run_count": 2,
+        "name": "inference.ToDatetimeFromIntsFloats.time_nanosec_uint64",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "55b37560ce70ea683ab6134ede09ee43de470162b68416ec0ef8b0f469e90e97",
         "warmup_time": -1
     },
     "inference.ToDatetimeFromIntsFloats.time_sec_float64": {
-        "code": "class ToDatetimeFromIntsFloats:\n    def time_sec_float64(self):\n        to_datetime(self.ts_sec_float, unit=\"s\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeFromIntsFloats:\n    def setup(self):\n        self.ts_sec = Series(range(1521080307, 1521685107), dtype=\"int64\")\n        self.ts_sec_float = self.ts_sec.astype(\"float64\")\n    \n        self.ts_nanosec = 1_000_000 * self.ts_sec\n        self.ts_nanosec_float = self.ts_nanosec.astype(\"float64\")",
+        "code": "class ToDatetimeFromIntsFloats:\n    def time_sec_float64(self):\n        to_datetime(self.ts_sec_float, unit=\"s\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeFromIntsFloats:\n    def setup(self):\n        self.ts_sec = Series(range(1521080307, 1521685107), dtype=\"int64\")\n        self.ts_sec_uint = Series(range(1521080307, 1521685107), dtype=\"uint64\")\n        self.ts_sec_float = self.ts_sec.astype(\"float64\")\n    \n        self.ts_nanosec = 1_000_000 * self.ts_sec\n        self.ts_nanosec_uint = 1_000_000 * self.ts_sec_uint\n        self.ts_nanosec_float = self.ts_nanosec.astype(\"float64\")",
         "min_run_count": 2,
         "name": "inference.ToDatetimeFromIntsFloats.time_sec_float64",
         "number": 0,
@@ -10203,11 +10219,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "9b6df5df0904804859cfe01f3574abadcc06bc03dae87de8f48a31ca258dac70",
+        "version": "412960192629b47bdb51536bd1acc465c6644d94331ec0b060809f15f2270d21",
         "warmup_time": -1
     },
     "inference.ToDatetimeFromIntsFloats.time_sec_int64": {
-        "code": "class ToDatetimeFromIntsFloats:\n    def time_sec_int64(self):\n        to_datetime(self.ts_sec, unit=\"s\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeFromIntsFloats:\n    def setup(self):\n        self.ts_sec = Series(range(1521080307, 1521685107), dtype=\"int64\")\n        self.ts_sec_float = self.ts_sec.astype(\"float64\")\n    \n        self.ts_nanosec = 1_000_000 * self.ts_sec\n        self.ts_nanosec_float = self.ts_nanosec.astype(\"float64\")",
+        "code": "class ToDatetimeFromIntsFloats:\n    def time_sec_int64(self):\n        to_datetime(self.ts_sec, unit=\"s\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeFromIntsFloats:\n    def setup(self):\n        self.ts_sec = Series(range(1521080307, 1521685107), dtype=\"int64\")\n        self.ts_sec_uint = Series(range(1521080307, 1521685107), dtype=\"uint64\")\n        self.ts_sec_float = self.ts_sec.astype(\"float64\")\n    \n        self.ts_nanosec = 1_000_000 * self.ts_sec\n        self.ts_nanosec_uint = 1_000_000 * self.ts_sec_uint\n        self.ts_nanosec_float = self.ts_nanosec.astype(\"float64\")",
         "min_run_count": 2,
         "name": "inference.ToDatetimeFromIntsFloats.time_sec_int64",
         "number": 0,
@@ -10219,7 +10235,23 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "5adbbea9a18a421ef0af6180ce0cd41a7f52599665068b5a13a2b5f88d0fdc60",
+        "version": "723bef42790ad2535ae6772086a189690bbc81c0dc720a9ae78f79b14541e1ed",
+        "warmup_time": -1
+    },
+    "inference.ToDatetimeFromIntsFloats.time_sec_uint64": {
+        "code": "class ToDatetimeFromIntsFloats:\n    def time_sec_uint64(self):\n        to_datetime(self.ts_sec_uint, unit=\"s\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeFromIntsFloats:\n    def setup(self):\n        self.ts_sec = Series(range(1521080307, 1521685107), dtype=\"int64\")\n        self.ts_sec_uint = Series(range(1521080307, 1521685107), dtype=\"uint64\")\n        self.ts_sec_float = self.ts_sec.astype(\"float64\")\n    \n        self.ts_nanosec = 1_000_000 * self.ts_sec\n        self.ts_nanosec_uint = 1_000_000 * self.ts_sec_uint\n        self.ts_nanosec_float = self.ts_nanosec.astype(\"float64\")",
+        "min_run_count": 2,
+        "name": "inference.ToDatetimeFromIntsFloats.time_sec_uint64",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "ca17f492874efa6d87297d7a5eb649d9b0235ba934649a093f70ea48bc399454",
         "warmup_time": -1
     },
     "inference.ToDatetimeISO8601.time_iso8601": {
