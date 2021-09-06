@@ -8814,7 +8814,7 @@
         "warmup_time": -1
     },
     "indexing.ChainIndexing.time_chained_indexing": {
-        "code": "class ChainIndexing:\n    def time_chained_indexing(self, mode):\n        with warnings.catch_warnings(record=True):\n            with option_context(\"mode.chained_assignment\", mode):\n                df = DataFrame({\"A\": np.arange(self.N), \"B\": \"foo\"})\n                df2 = df[df.A > self.N // 2]\n                df2[\"C\"] = 1.0\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ChainIndexing:\n    def setup(self, mode):\n        self.N = 1000000",
+        "code": "class ChainIndexing:\n    def time_chained_indexing(self, mode):\n        df = self.df\n        N = self.N\n        with warnings.catch_warnings(record=True):\n            with option_context(\"mode.chained_assignment\", mode):\n                df2 = df[df.A > N // 2]\n                df2[\"C\"] = 1.0\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ChainIndexing:\n    def setup(self, mode):\n        self.N = 1000000\n        self.df = DataFrame({\"A\": np.arange(self.N), \"B\": \"foo\"})",
         "min_run_count": 2,
         "name": "indexing.ChainIndexing.time_chained_indexing",
         "number": 0,
@@ -8833,7 +8833,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "1852278eb313356e638fb436baf4713fa636ddcc410101e7b84f7033d5d0a180",
+        "version": "16258f12b7c725f7ffc21ffed9c69bd9751f02f6a459f86e81c20750c1fc1bba",
         "warmup_time": -1
     },
     "indexing.DataFrameNumericIndexing.time_bool_indexer": {
@@ -17055,19 +17055,49 @@
         "warmup_time": -1
     },
     "sparse.ToCoo.time_sparse_series_to_coo": {
-        "code": "class ToCoo:\n    def time_sparse_series_to_coo(self):\n        self.ss.sparse.to_coo(row_levels=[0, 1], column_levels=[2, 3], sort_labels=True)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToCoo:\n    def setup(self):\n        s = Series([np.nan] * 10000)\n        s[0] = 3.0\n        s[100] = -1.0\n        s[999] = 12.1\n        s.index = MultiIndex.from_product([range(10)] * 4)\n        self.ss = s.astype(\"Sparse\")",
+        "code": "class ToCoo:\n    def time_sparse_series_to_coo(self, sort_labels):\n        self.ss_mult_lvl.sparse.to_coo(\n            row_levels=[0, 1], column_levels=[2, 3], sort_labels=sort_labels\n        )\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToCoo:\n    def setup(self, sort_labels):\n        s = Series([np.nan] * 10000)\n        s[0] = 3.0\n        s[100] = -1.0\n        s[999] = 12.1\n    \n        s_mult_lvl = s.set_axis(MultiIndex.from_product([range(10)] * 4))\n        self.ss_mult_lvl = s_mult_lvl.astype(\"Sparse\")\n    \n        s_two_lvl = s.set_axis(MultiIndex.from_product([range(100)] * 2))\n        self.ss_two_lvl = s_two_lvl.astype(\"Sparse\")",
         "min_run_count": 2,
         "name": "sparse.ToCoo.time_sparse_series_to_coo",
         "number": 0,
-        "param_names": [],
-        "params": [],
+        "param_names": [
+            "sort_labels"
+        ],
+        "params": [
+            [
+                "True",
+                "False"
+            ]
+        ],
         "repeat": 0,
         "rounds": 2,
         "sample_time": 0.01,
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "dc0f3e2236462c3b4de98536212d1d6c334d5a2dda26eb52a73a7995922d80e1",
+        "version": "30ca6ac73768cb7fe0d759bfd836f6ccc90dbdfcd666842cfe90d333c4063300",
+        "warmup_time": -1
+    },
+    "sparse.ToCoo.time_sparse_series_to_coo_single_level": {
+        "code": "class ToCoo:\n    def time_sparse_series_to_coo_single_level(self, sort_labels):\n        self.ss_two_lvl.sparse.to_coo(sort_labels=sort_labels)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToCoo:\n    def setup(self, sort_labels):\n        s = Series([np.nan] * 10000)\n        s[0] = 3.0\n        s[100] = -1.0\n        s[999] = 12.1\n    \n        s_mult_lvl = s.set_axis(MultiIndex.from_product([range(10)] * 4))\n        self.ss_mult_lvl = s_mult_lvl.astype(\"Sparse\")\n    \n        s_two_lvl = s.set_axis(MultiIndex.from_product([range(100)] * 2))\n        self.ss_two_lvl = s_two_lvl.astype(\"Sparse\")",
+        "min_run_count": 2,
+        "name": "sparse.ToCoo.time_sparse_series_to_coo_single_level",
+        "number": 0,
+        "param_names": [
+            "sort_labels"
+        ],
+        "params": [
+            [
+                "True",
+                "False"
+            ]
+        ],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "9f146457117b9ef50ec361711446aad79f7c706f074b3b9d901b5536c47680c0",
         "warmup_time": -1
     },
     "stat_ops.Correlation.peakmem_corr_wide": {
