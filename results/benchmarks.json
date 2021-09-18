@@ -6738,7 +6738,7 @@
         "warmup_time": -1
     },
     "groupby.GroupByMethods.time_dtype_as_field": {
-        "code": "class GroupByMethods:\n    def time_dtype_as_field(self, dtype, method, application, ncols):\n        self.as_field_method()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass GroupByMethods:\n    def setup(self, dtype, method, application, ncols):\n        if method in method_blocklist.get(dtype, {}):\n            raise NotImplementedError  # skip benchmark\n    \n        if ncols != 1 and method in [\"value_counts\", \"unique\"]:\n            # DataFrameGroupBy doesn't have these methods\n            raise NotImplementedError\n    \n        ngroups = 1000\n        size = ngroups * 2\n        rng = np.arange(ngroups).reshape(-1, 1)\n        rng = np.broadcast_to(rng, (len(rng), ncols))\n        taker = np.random.randint(0, ngroups, size=size)\n        values = rng.take(taker, axis=0)\n        if dtype == \"int\":\n            key = np.random.randint(0, size, size=size)\n        elif dtype == \"uint\":\n            key = np.random.randint(0, size, size=size, dtype=dtype)\n        elif dtype == \"float\":\n            key = np.concatenate(\n                [np.random.random(ngroups) * 0.1, np.random.random(ngroups) * 10.0]\n            )\n        elif dtype == \"object\":\n            key = [\"foo\"] * size\n        elif dtype == \"datetime\":\n            key = date_range(\"1/1/2011\", periods=size, freq=\"s\")\n    \n        cols = [f\"values{n}\" for n in range(ncols)]\n        df = DataFrame(values, columns=cols)\n        df[\"key\"] = key\n    \n        if len(cols) == 1:\n            cols = cols[0]\n    \n        if application == \"transform\":\n            if method == \"describe\":\n                raise NotImplementedError\n    \n            self.as_group_method = lambda: df.groupby(\"key\")[cols].transform(method)\n            self.as_field_method = lambda: df.groupby(cols)[\"key\"].transform(method)\n        else:\n            self.as_group_method = getattr(df.groupby(\"key\")[cols], method)\n            self.as_field_method = getattr(df.groupby(cols)[\"key\"], method)",
+        "code": "class GroupByMethods:\n    def time_dtype_as_field(self, dtype, method, application, ncols):\n        self.as_field_method()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass GroupByMethods:\n    def setup(self, dtype, method, application, ncols):\n        if method in method_blocklist.get(dtype, {}):\n            raise NotImplementedError  # skip benchmark\n    \n        if ncols != 1 and method in [\"value_counts\", \"unique\"]:\n            # DataFrameGroupBy doesn't have these methods\n            raise NotImplementedError\n    \n        if application == \"transformation\" and method in [\n            \"head\",\n            \"tail\",\n            \"unique\",\n            \"value_counts\",\n            \"size\",\n        ]:\n            # DataFrameGroupBy doesn't have these methods\n            raise NotImplementedError\n    \n        ngroups = 1000\n        size = ngroups * 2\n        rng = np.arange(ngroups).reshape(-1, 1)\n        rng = np.broadcast_to(rng, (len(rng), ncols))\n        taker = np.random.randint(0, ngroups, size=size)\n        values = rng.take(taker, axis=0)\n        if dtype == \"int\":\n            key = np.random.randint(0, size, size=size)\n        elif dtype == \"uint\":\n            key = np.random.randint(0, size, size=size, dtype=dtype)\n        elif dtype == \"float\":\n            key = np.concatenate(\n                [np.random.random(ngroups) * 0.1, np.random.random(ngroups) * 10.0]\n            )\n        elif dtype == \"object\":\n            key = [\"foo\"] * size\n        elif dtype == \"datetime\":\n            key = date_range(\"1/1/2011\", periods=size, freq=\"s\")\n    \n        cols = [f\"values{n}\" for n in range(ncols)]\n        df = DataFrame(values, columns=cols)\n        df[\"key\"] = key\n    \n        if len(cols) == 1:\n            cols = cols[0]\n    \n        if application == \"transformation\":\n            if method == \"describe\":\n                raise NotImplementedError\n    \n            self.as_group_method = lambda: df.groupby(\"key\")[cols].transform(method)\n            self.as_field_method = lambda: df.groupby(cols)[\"key\"].transform(method)\n        else:\n            self.as_group_method = getattr(df.groupby(\"key\")[cols], method)\n            self.as_field_method = getattr(df.groupby(cols)[\"key\"], method)",
         "min_run_count": 2,
         "name": "groupby.GroupByMethods.time_dtype_as_field",
         "number": 0,
@@ -6809,11 +6809,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "5ea7cd12f5f2450b503062738f058e0c3486677a8db09522816f84609d0b612a",
+        "version": "c8a393b3d66b82b6f05bb8f29637726c360eef82469999a7a7271cc7448dc87b",
         "warmup_time": -1
     },
     "groupby.GroupByMethods.time_dtype_as_group": {
-        "code": "class GroupByMethods:\n    def time_dtype_as_group(self, dtype, method, application, ncols):\n        self.as_group_method()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass GroupByMethods:\n    def setup(self, dtype, method, application, ncols):\n        if method in method_blocklist.get(dtype, {}):\n            raise NotImplementedError  # skip benchmark\n    \n        if ncols != 1 and method in [\"value_counts\", \"unique\"]:\n            # DataFrameGroupBy doesn't have these methods\n            raise NotImplementedError\n    \n        ngroups = 1000\n        size = ngroups * 2\n        rng = np.arange(ngroups).reshape(-1, 1)\n        rng = np.broadcast_to(rng, (len(rng), ncols))\n        taker = np.random.randint(0, ngroups, size=size)\n        values = rng.take(taker, axis=0)\n        if dtype == \"int\":\n            key = np.random.randint(0, size, size=size)\n        elif dtype == \"uint\":\n            key = np.random.randint(0, size, size=size, dtype=dtype)\n        elif dtype == \"float\":\n            key = np.concatenate(\n                [np.random.random(ngroups) * 0.1, np.random.random(ngroups) * 10.0]\n            )\n        elif dtype == \"object\":\n            key = [\"foo\"] * size\n        elif dtype == \"datetime\":\n            key = date_range(\"1/1/2011\", periods=size, freq=\"s\")\n    \n        cols = [f\"values{n}\" for n in range(ncols)]\n        df = DataFrame(values, columns=cols)\n        df[\"key\"] = key\n    \n        if len(cols) == 1:\n            cols = cols[0]\n    \n        if application == \"transform\":\n            if method == \"describe\":\n                raise NotImplementedError\n    \n            self.as_group_method = lambda: df.groupby(\"key\")[cols].transform(method)\n            self.as_field_method = lambda: df.groupby(cols)[\"key\"].transform(method)\n        else:\n            self.as_group_method = getattr(df.groupby(\"key\")[cols], method)\n            self.as_field_method = getattr(df.groupby(cols)[\"key\"], method)",
+        "code": "class GroupByMethods:\n    def time_dtype_as_group(self, dtype, method, application, ncols):\n        self.as_group_method()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass GroupByMethods:\n    def setup(self, dtype, method, application, ncols):\n        if method in method_blocklist.get(dtype, {}):\n            raise NotImplementedError  # skip benchmark\n    \n        if ncols != 1 and method in [\"value_counts\", \"unique\"]:\n            # DataFrameGroupBy doesn't have these methods\n            raise NotImplementedError\n    \n        if application == \"transformation\" and method in [\n            \"head\",\n            \"tail\",\n            \"unique\",\n            \"value_counts\",\n            \"size\",\n        ]:\n            # DataFrameGroupBy doesn't have these methods\n            raise NotImplementedError\n    \n        ngroups = 1000\n        size = ngroups * 2\n        rng = np.arange(ngroups).reshape(-1, 1)\n        rng = np.broadcast_to(rng, (len(rng), ncols))\n        taker = np.random.randint(0, ngroups, size=size)\n        values = rng.take(taker, axis=0)\n        if dtype == \"int\":\n            key = np.random.randint(0, size, size=size)\n        elif dtype == \"uint\":\n            key = np.random.randint(0, size, size=size, dtype=dtype)\n        elif dtype == \"float\":\n            key = np.concatenate(\n                [np.random.random(ngroups) * 0.1, np.random.random(ngroups) * 10.0]\n            )\n        elif dtype == \"object\":\n            key = [\"foo\"] * size\n        elif dtype == \"datetime\":\n            key = date_range(\"1/1/2011\", periods=size, freq=\"s\")\n    \n        cols = [f\"values{n}\" for n in range(ncols)]\n        df = DataFrame(values, columns=cols)\n        df[\"key\"] = key\n    \n        if len(cols) == 1:\n            cols = cols[0]\n    \n        if application == \"transformation\":\n            if method == \"describe\":\n                raise NotImplementedError\n    \n            self.as_group_method = lambda: df.groupby(\"key\")[cols].transform(method)\n            self.as_field_method = lambda: df.groupby(cols)[\"key\"].transform(method)\n        else:\n            self.as_group_method = getattr(df.groupby(\"key\")[cols], method)\n            self.as_field_method = getattr(df.groupby(cols)[\"key\"], method)",
         "min_run_count": 2,
         "name": "groupby.GroupByMethods.time_dtype_as_group",
         "number": 0,
@@ -6884,7 +6884,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "de1a3fd6713ac1958b0b2e8ddcd8bd0cf3b8986667886395e023663a956d0167",
+        "version": "f6cb0af0e438588a669af581f7d71978f2cf60e10503195a21afba2863f3dc67",
         "warmup_time": -1
     },
     "groupby.GroupManyLabels.time_sum": {
@@ -10255,7 +10255,7 @@
         "warmup_time": -1
     },
     "inference.ToDatetimeISO8601.time_iso8601": {
-        "code": "class ToDatetimeISO8601:\n    def time_iso8601(self):\n        to_datetime(self.strings)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeISO8601:\n    def setup(self):\n        rng = date_range(start=\"1/1/2000\", periods=20000, freq=\"H\")\n        self.strings = rng.strftime(\"%Y-%m-%d %H:%M:%S\").tolist()\n        self.strings_nosep = rng.strftime(\"%Y%m%d %H:%M:%S\").tolist()\n        self.strings_tz_space = [\n            x.strftime(\"%Y-%m-%d %H:%M:%S\") + \" -0800\" for x in rng\n        ]",
+        "code": "class ToDatetimeISO8601:\n    def time_iso8601(self):\n        to_datetime(self.strings)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeISO8601:\n    def setup(self):\n        rng = date_range(start=\"1/1/2000\", periods=20000, freq=\"H\")\n        self.strings = rng.strftime(\"%Y-%m-%d %H:%M:%S\").tolist()\n        self.strings_nosep = rng.strftime(\"%Y%m%d %H:%M:%S\").tolist()\n        self.strings_tz_space = [\n            x.strftime(\"%Y-%m-%d %H:%M:%S\") + \" -0800\" for x in rng\n        ]\n        self.strings_zero_tz = [x.strftime(\"%Y-%m-%d %H:%M:%S\") + \"Z\" for x in rng]",
         "min_run_count": 2,
         "name": "inference.ToDatetimeISO8601.time_iso8601",
         "number": 0,
@@ -10267,11 +10267,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "491b4db6f48a66f61f6740d933d806d816605e0435f9c698278a19ad6f145f5e",
+        "version": "8a9f5fa8618dda5ec7d3fcacc7ea1b91b2f812dea4716f11e58bc0a3e893b194",
         "warmup_time": -1
     },
     "inference.ToDatetimeISO8601.time_iso8601_format": {
-        "code": "class ToDatetimeISO8601:\n    def time_iso8601_format(self):\n        to_datetime(self.strings, format=\"%Y-%m-%d %H:%M:%S\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeISO8601:\n    def setup(self):\n        rng = date_range(start=\"1/1/2000\", periods=20000, freq=\"H\")\n        self.strings = rng.strftime(\"%Y-%m-%d %H:%M:%S\").tolist()\n        self.strings_nosep = rng.strftime(\"%Y%m%d %H:%M:%S\").tolist()\n        self.strings_tz_space = [\n            x.strftime(\"%Y-%m-%d %H:%M:%S\") + \" -0800\" for x in rng\n        ]",
+        "code": "class ToDatetimeISO8601:\n    def time_iso8601_format(self):\n        to_datetime(self.strings, format=\"%Y-%m-%d %H:%M:%S\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeISO8601:\n    def setup(self):\n        rng = date_range(start=\"1/1/2000\", periods=20000, freq=\"H\")\n        self.strings = rng.strftime(\"%Y-%m-%d %H:%M:%S\").tolist()\n        self.strings_nosep = rng.strftime(\"%Y%m%d %H:%M:%S\").tolist()\n        self.strings_tz_space = [\n            x.strftime(\"%Y-%m-%d %H:%M:%S\") + \" -0800\" for x in rng\n        ]\n        self.strings_zero_tz = [x.strftime(\"%Y-%m-%d %H:%M:%S\") + \"Z\" for x in rng]",
         "min_run_count": 2,
         "name": "inference.ToDatetimeISO8601.time_iso8601_format",
         "number": 0,
@@ -10283,11 +10283,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "efbf3edc1de2f89b4d7405f3eeff751345ac28a09819a18dc5160c4b81e1f59f",
+        "version": "d9b6d05dcef0bd9a57b30f88e40cba877d5d3a456d585869ad724c9cd7778691",
         "warmup_time": -1
     },
     "inference.ToDatetimeISO8601.time_iso8601_format_no_sep": {
-        "code": "class ToDatetimeISO8601:\n    def time_iso8601_format_no_sep(self):\n        to_datetime(self.strings_nosep, format=\"%Y%m%d %H:%M:%S\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeISO8601:\n    def setup(self):\n        rng = date_range(start=\"1/1/2000\", periods=20000, freq=\"H\")\n        self.strings = rng.strftime(\"%Y-%m-%d %H:%M:%S\").tolist()\n        self.strings_nosep = rng.strftime(\"%Y%m%d %H:%M:%S\").tolist()\n        self.strings_tz_space = [\n            x.strftime(\"%Y-%m-%d %H:%M:%S\") + \" -0800\" for x in rng\n        ]",
+        "code": "class ToDatetimeISO8601:\n    def time_iso8601_format_no_sep(self):\n        to_datetime(self.strings_nosep, format=\"%Y%m%d %H:%M:%S\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeISO8601:\n    def setup(self):\n        rng = date_range(start=\"1/1/2000\", periods=20000, freq=\"H\")\n        self.strings = rng.strftime(\"%Y-%m-%d %H:%M:%S\").tolist()\n        self.strings_nosep = rng.strftime(\"%Y%m%d %H:%M:%S\").tolist()\n        self.strings_tz_space = [\n            x.strftime(\"%Y-%m-%d %H:%M:%S\") + \" -0800\" for x in rng\n        ]\n        self.strings_zero_tz = [x.strftime(\"%Y-%m-%d %H:%M:%S\") + \"Z\" for x in rng]",
         "min_run_count": 2,
         "name": "inference.ToDatetimeISO8601.time_iso8601_format_no_sep",
         "number": 0,
@@ -10299,11 +10299,27 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "01d224b1943d507d64661ad9dcf318a86942eabe1a499083d1db5e1c40c81e99",
+        "version": "90328a5ba99082bbb0b5759492dd90d4b20174a908bf8eb53038490d589931ff",
+        "warmup_time": -1
+    },
+    "inference.ToDatetimeISO8601.time_iso8601_infer_zero_tz_fromat": {
+        "code": "class ToDatetimeISO8601:\n    def time_iso8601_infer_zero_tz_fromat(self):\n        # GH 41047\n        to_datetime(self.strings_zero_tz, infer_datetime_format=True)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeISO8601:\n    def setup(self):\n        rng = date_range(start=\"1/1/2000\", periods=20000, freq=\"H\")\n        self.strings = rng.strftime(\"%Y-%m-%d %H:%M:%S\").tolist()\n        self.strings_nosep = rng.strftime(\"%Y%m%d %H:%M:%S\").tolist()\n        self.strings_tz_space = [\n            x.strftime(\"%Y-%m-%d %H:%M:%S\") + \" -0800\" for x in rng\n        ]\n        self.strings_zero_tz = [x.strftime(\"%Y-%m-%d %H:%M:%S\") + \"Z\" for x in rng]",
+        "min_run_count": 2,
+        "name": "inference.ToDatetimeISO8601.time_iso8601_infer_zero_tz_fromat",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "18d1b84037f1590dcd9949420496153dbb1ff9b74e8baaa7190b5db5b69e47cb",
         "warmup_time": -1
     },
     "inference.ToDatetimeISO8601.time_iso8601_nosep": {
-        "code": "class ToDatetimeISO8601:\n    def time_iso8601_nosep(self):\n        to_datetime(self.strings_nosep)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeISO8601:\n    def setup(self):\n        rng = date_range(start=\"1/1/2000\", periods=20000, freq=\"H\")\n        self.strings = rng.strftime(\"%Y-%m-%d %H:%M:%S\").tolist()\n        self.strings_nosep = rng.strftime(\"%Y%m%d %H:%M:%S\").tolist()\n        self.strings_tz_space = [\n            x.strftime(\"%Y-%m-%d %H:%M:%S\") + \" -0800\" for x in rng\n        ]",
+        "code": "class ToDatetimeISO8601:\n    def time_iso8601_nosep(self):\n        to_datetime(self.strings_nosep)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeISO8601:\n    def setup(self):\n        rng = date_range(start=\"1/1/2000\", periods=20000, freq=\"H\")\n        self.strings = rng.strftime(\"%Y-%m-%d %H:%M:%S\").tolist()\n        self.strings_nosep = rng.strftime(\"%Y%m%d %H:%M:%S\").tolist()\n        self.strings_tz_space = [\n            x.strftime(\"%Y-%m-%d %H:%M:%S\") + \" -0800\" for x in rng\n        ]\n        self.strings_zero_tz = [x.strftime(\"%Y-%m-%d %H:%M:%S\") + \"Z\" for x in rng]",
         "min_run_count": 2,
         "name": "inference.ToDatetimeISO8601.time_iso8601_nosep",
         "number": 0,
@@ -10315,11 +10331,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "aa85cdd5a79b848437492ae656a56aa32b4e763ec64d218f42d97d83d8f89fc2",
+        "version": "75bb85aabdd375a3bca428f0e741a086e63ddeedd898c59144432029585d0bf2",
         "warmup_time": -1
     },
     "inference.ToDatetimeISO8601.time_iso8601_tz_spaceformat": {
-        "code": "class ToDatetimeISO8601:\n    def time_iso8601_tz_spaceformat(self):\n        to_datetime(self.strings_tz_space)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeISO8601:\n    def setup(self):\n        rng = date_range(start=\"1/1/2000\", periods=20000, freq=\"H\")\n        self.strings = rng.strftime(\"%Y-%m-%d %H:%M:%S\").tolist()\n        self.strings_nosep = rng.strftime(\"%Y%m%d %H:%M:%S\").tolist()\n        self.strings_tz_space = [\n            x.strftime(\"%Y-%m-%d %H:%M:%S\") + \" -0800\" for x in rng\n        ]",
+        "code": "class ToDatetimeISO8601:\n    def time_iso8601_tz_spaceformat(self):\n        to_datetime(self.strings_tz_space)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeISO8601:\n    def setup(self):\n        rng = date_range(start=\"1/1/2000\", periods=20000, freq=\"H\")\n        self.strings = rng.strftime(\"%Y-%m-%d %H:%M:%S\").tolist()\n        self.strings_nosep = rng.strftime(\"%Y%m%d %H:%M:%S\").tolist()\n        self.strings_tz_space = [\n            x.strftime(\"%Y-%m-%d %H:%M:%S\") + \" -0800\" for x in rng\n        ]\n        self.strings_zero_tz = [x.strftime(\"%Y-%m-%d %H:%M:%S\") + \"Z\" for x in rng]",
         "min_run_count": 2,
         "name": "inference.ToDatetimeISO8601.time_iso8601_tz_spaceformat",
         "number": 0,
@@ -10331,7 +10347,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "162ec517318f3b94824b35f14a3b60eae27466138d08f3f3167d25dd864c3d9d",
+        "version": "ffda3795a72b4023991d1daa18e3b0a3cabffd330b369a59c89a7d6c8d190102",
         "warmup_time": -1
     },
     "inference.ToDatetimeNONISO8601.time_different_offset": {
@@ -16223,6 +16239,55 @@
         "version": "c5bc3e62eee5afb0b65a12c1d8f0ecf2412c8e8f4ff0739467723caad469392a",
         "warmup_time": -1
     },
+    "rolling.Rank.time_rank": {
+        "code": "class Rank:\n    def time_rank(self, constructor, window, dtype, percentile, ascending, method):\n        self.roll.rank(pct=percentile, ascending=ascending, method=method)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Rank:\n    def setup(self, constructor, window, dtype, percentile, ascending, method):\n        N = 10 ** 5\n        arr = np.random.random(N).astype(dtype)\n        self.roll = getattr(pd, constructor)(arr).rolling(window)",
+        "min_run_count": 2,
+        "name": "rolling.Rank.time_rank",
+        "number": 0,
+        "param_names": [
+            "constructor",
+            "window",
+            "dtype",
+            "percentile",
+            "ascending",
+            "method"
+        ],
+        "params": [
+            [
+                "'DataFrame'",
+                "'Series'"
+            ],
+            [
+                "10",
+                "1000"
+            ],
+            [
+                "'int'",
+                "'float'"
+            ],
+            [
+                "True",
+                "False"
+            ],
+            [
+                "True",
+                "False"
+            ],
+            [
+                "'min'",
+                "'max'",
+                "'average'"
+            ]
+        ],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "b66f0211815db9f94af591c45909526cedcf7941237b565156c279d6470e06f9",
+        "warmup_time": -1
+    },
     "rolling.TableMethod.time_apply": {
         "code": "class TableMethod:\n    def time_apply(self, method):\n        self.df.rolling(2, method=method).apply(\n            table_method_func, raw=True, engine=\"numba\"\n        )\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass TableMethod:\n    def setup(self, method):\n        self.df = pd.DataFrame(np.random.randn(10, 1000))",
         "min_run_count": 2,
@@ -16737,6 +16802,36 @@
         "version": "9d0c98e7b0a82a43867823927e4df7fa792b8a8b8fc84b81b10f279204be915f",
         "warmup_time": -1
     },
+    "series_methods.ToFrame.time_to_frame": {
+        "code": "class ToFrame:\n    def time_to_frame(self, dtype, name):\n        self.ser.to_frame(name)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToFrame:\n    def setup(self, dtype, name):\n        arr = np.arange(10 ** 5)\n        ser = Series(arr, dtype=dtype)\n        self.ser = ser",
+        "min_run_count": 2,
+        "name": "series_methods.ToFrame.time_to_frame",
+        "number": 0,
+        "param_names": [
+            "dtype",
+            "name"
+        ],
+        "params": [
+            [
+                "'int64'",
+                "'datetime64[ns]'",
+                "'category'",
+                "'Int64'"
+            ],
+            [
+                "None",
+                "'foo'"
+            ]
+        ],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "14942e3c2f7403420b6f836a981b1fb3a5fd6387e8a070b2ff0ce5c6f671804c",
+        "warmup_time": -1
+    },
     "series_methods.ValueCounts.time_value_counts": {
         "code": "class ValueCounts:\n    def time_value_counts(self, N, dtype):\n        self.s.value_counts()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ValueCounts:\n    def setup(self, N, dtype):\n        self.s = Series(np.random.randint(0, N, size=10 * N)).astype(dtype)",
         "min_run_count": 2,
@@ -16988,6 +17083,34 @@
         "version": "195924096fa77c5284cc4c2886c3e4e1ec58441bb83c1afe52ee2d94f9987a1a",
         "warmup_time": -1
     },
+    "sparse.MinMax.time_min_max": {
+        "code": "class MinMax:\n    def time_min_max(self, func, fill_value):\n        getattr(self.sp_arr, func)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass MinMax:\n    def setup(self, func, fill_value):\n        N = 1_000_000\n        arr = make_array(N, 1e-5, fill_value, np.float64)\n        self.sp_arr = SparseArray(arr, fill_value=fill_value)",
+        "min_run_count": 2,
+        "name": "sparse.MinMax.time_min_max",
+        "number": 0,
+        "param_names": [
+            "func",
+            "fill_value"
+        ],
+        "params": [
+            [
+                "'min'",
+                "'max'"
+            ],
+            [
+                "0.0",
+                "nan"
+            ]
+        ],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "5666067aa9bdd3647031cbff0f601ab81231b8c4dc791adc44067a9f361d169a",
+        "warmup_time": -1
+    },
     "sparse.SparseArrayConstructor.time_sparse_array": {
         "code": "class SparseArrayConstructor:\n    def time_sparse_array(self, dense_proportion, fill_value, dtype):\n        SparseArray(self.array, fill_value=fill_value, dtype=dtype)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass SparseArrayConstructor:\n    def setup(self, dense_proportion, fill_value, dtype):\n        N = 10 ** 6\n        self.array = make_array(N, dense_proportion, fill_value, dtype)",
         "min_run_count": 2,
@@ -17098,6 +17221,22 @@
         "type": "time",
         "unit": "seconds",
         "version": "9f146457117b9ef50ec361711446aad79f7c706f074b3b9d901b5536c47680c0",
+        "warmup_time": -1
+    },
+    "sparse.ToCooFrame.time_to_coo": {
+        "code": "class ToCooFrame:\n    def time_to_coo(self):\n        self.df.sparse.to_coo()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToCooFrame:\n    def setup(self):\n        N = 10000\n        k = 10\n        arr = np.full((N, k), np.nan)\n        arr[0, 0] = 3.0\n        arr[12, 7] = -1.0\n        arr[0, 9] = 11.2\n        self.df = pd.DataFrame(arr, dtype=pd.SparseDtype(\"float\"))",
+        "min_run_count": 2,
+        "name": "sparse.ToCooFrame.time_to_coo",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "02adc25ce9b88f6844fc85d0a55ded12976a0e32b6c8f1696ae782612b404a3d",
         "warmup_time": -1
     },
     "stat_ops.Correlation.peakmem_corr_wide": {
