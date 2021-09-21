@@ -9809,7 +9809,7 @@
         "warmup_time": -1
     },
     "indexing_engines.NumericEngineIndexing.time_get_loc": {
-        "code": "class NumericEngineIndexing:\n    def time_get_loc(self, engine_and_dtype, index_type):\n        self.data.get_loc(2)\n\n    def setup(self, engine_and_dtype, index_type):\n        engine, dtype = engine_and_dtype\n        N = 10 ** 5\n        values = list([1] * N + [2] * N + [3] * N)\n        arr = {\n            \"monotonic_incr\": np.array(values, dtype=dtype),\n            \"monotonic_decr\": np.array(list(reversed(values)), dtype=dtype),\n            \"non_monotonic\": np.array([1, 2, 3] * N, dtype=dtype),\n        }[index_type]\n    \n        self.data = engine(lambda: arr, len(arr))\n        # code belows avoids populating the mapping etc. while timing.\n        self.data.get_loc(2)",
+        "code": "class NumericEngineIndexing:\n    def time_get_loc(self, engine_and_dtype, index_type):\n        self.data.get_loc(2)\n\n    def setup(self, engine_and_dtype, index_type):\n        engine, dtype = engine_and_dtype\n        N = 10 ** 5\n        values = list([1] * N + [2] * N + [3] * N)\n        arr = {\n            \"monotonic_incr\": np.array(values, dtype=dtype),\n            \"monotonic_decr\": np.array(list(reversed(values)), dtype=dtype),\n            \"non_monotonic\": np.array([1, 2, 3] * N, dtype=dtype),\n        }[index_type]\n    \n        self.data = engine(arr)\n        # code belows avoids populating the mapping etc. while timing.\n        self.data.get_loc(2)",
         "min_run_count": 2,
         "name": "indexing_engines.NumericEngineIndexing.time_get_loc",
         "number": 0,
@@ -9841,11 +9841,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "aff10ff0b98d7e5652aaf857313e2c8e50394552d45c7160a6057efd3c87bb7e",
+        "version": "a3ed7b43acacc2e73cfdf39640a845a108885b5db4ae98f649878544b424c0d7",
         "warmup_time": -1
     },
     "indexing_engines.ObjectEngineIndexing.time_get_loc": {
-        "code": "class ObjectEngineIndexing:\n    def time_get_loc(self, index_type):\n        self.data.get_loc(\"b\")\n\n    def setup(self, index_type):\n        N = 10 ** 5\n        values = list(\"a\" * N + \"b\" * N + \"c\" * N)\n        arr = {\n            \"monotonic_incr\": np.array(values, dtype=object),\n            \"monotonic_decr\": np.array(list(reversed(values)), dtype=object),\n            \"non_monotonic\": np.array(list(\"abc\") * N, dtype=object),\n        }[index_type]\n    \n        self.data = libindex.ObjectEngine(lambda: arr, len(arr))\n        # code belows avoids populating the mapping etc. while timing.\n        self.data.get_loc(\"b\")",
+        "code": "class ObjectEngineIndexing:\n    def time_get_loc(self, index_type):\n        self.data.get_loc(\"b\")\n\n    def setup(self, index_type):\n        N = 10 ** 5\n        values = list(\"a\" * N + \"b\" * N + \"c\" * N)\n        arr = {\n            \"monotonic_incr\": np.array(values, dtype=object),\n            \"monotonic_decr\": np.array(list(reversed(values)), dtype=object),\n            \"non_monotonic\": np.array(list(\"abc\") * N, dtype=object),\n        }[index_type]\n    \n        self.data = libindex.ObjectEngine(arr)\n        # code belows avoids populating the mapping etc. while timing.\n        self.data.get_loc(\"b\")",
         "min_run_count": 2,
         "name": "indexing_engines.ObjectEngineIndexing.time_get_loc",
         "number": 0,
@@ -9865,7 +9865,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "527fa7b8e67a6a391e13d9dfb924ef23c00f914aba0a8dae3de9fd26044a91b1",
+        "version": "7de453d18b237449a1eb98cd6485628661e7f3695d081c49e923e0539f7652af",
         "warmup_time": -1
     },
     "inference.MaybeConvertNumeric.time_convert": {
