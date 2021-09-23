@@ -12510,6 +12510,29 @@
         "version": "176723ae88d2b2e895a722920a685f395ae424b95e57eb161ff9885f5074d864",
         "warmup_time": -1
     },
+    "io.style.Render.peakmem_apply_format_hide_render": {
+        "code": "class Render:\n    def peakmem_apply_format_hide_render(self, cols, rows):\n        self._style_apply_format_hide()\n        self.st._render_html(True, True)\n\n    def setup(self, cols, rows):\n        self.df = DataFrame(\n            np.random.randn(rows, cols),\n            columns=[f\"float_{i+1}\" for i in range(cols)],\n            index=[f\"row_{i+1}\" for i in range(rows)],\n        )",
+        "name": "io.style.Render.peakmem_apply_format_hide_render",
+        "param_names": [
+            "cols",
+            "rows"
+        ],
+        "params": [
+            [
+                "12",
+                "24",
+                "36"
+            ],
+            [
+                "12",
+                "120"
+            ]
+        ],
+        "timeout": 60.0,
+        "type": "peakmemory",
+        "unit": "bytes",
+        "version": "24efee29e9f4259b3dc32b50ebebd07120a2cc59672b5f07aaf694b3350ffc33"
+    },
     "io.style.Render.peakmem_apply_render": {
         "code": "class Render:\n    def peakmem_apply_render(self, cols, rows):\n        self._style_apply()\n        self.st._render_html(True, True)\n\n    def setup(self, cols, rows):\n        self.df = DataFrame(\n            np.random.randn(rows, cols),\n            columns=[f\"float_{i+1}\" for i in range(cols)],\n            index=[f\"row_{i+1}\" for i in range(rows)],\n        )",
         "name": "io.style.Render.peakmem_apply_render",
@@ -12578,6 +12601,35 @@
         "type": "peakmemory",
         "unit": "bytes",
         "version": "2d2ae2b598964ca4ec2ce6befed05ff0ed2c8833539c314cbc42c2a006d9abcf"
+    },
+    "io.style.Render.time_apply_format_hide_render": {
+        "code": "class Render:\n    def time_apply_format_hide_render(self, cols, rows):\n        self._style_apply_format_hide()\n        self.st._render_html(True, True)\n\n    def setup(self, cols, rows):\n        self.df = DataFrame(\n            np.random.randn(rows, cols),\n            columns=[f\"float_{i+1}\" for i in range(cols)],\n            index=[f\"row_{i+1}\" for i in range(rows)],\n        )",
+        "min_run_count": 2,
+        "name": "io.style.Render.time_apply_format_hide_render",
+        "number": 0,
+        "param_names": [
+            "cols",
+            "rows"
+        ],
+        "params": [
+            [
+                "12",
+                "24",
+                "36"
+            ],
+            [
+                "12",
+                "120"
+            ]
+        ],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "4624b648242dbd72367816b07786b7bb20dec67fcf4d8b269046640a281b891b",
+        "warmup_time": -1
     },
     "io.style.Render.time_apply_render": {
         "code": "class Render:\n    def time_apply_render(self, cols, rows):\n        self._style_apply()\n        self.st._render_html(True, True)\n\n    def setup(self, cols, rows):\n        self.df = DataFrame(\n            np.random.randn(rows, cols),\n            columns=[f\"float_{i+1}\" for i in range(cols)],\n            index=[f\"row_{i+1}\" for i in range(rows)],\n        )",
