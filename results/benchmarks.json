@@ -1,6 +1,6 @@
 {
     "algorithms.Duplicated.time_duplicated": {
-        "code": "class Duplicated:\n    def time_duplicated(self, unique, keep, dtype):\n        self.idx.duplicated(keep=keep)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Duplicated:\n    def setup(self, unique, keep, dtype):\n        N = 10 ** 5\n        data = {\n            \"int\": pd.Int64Index(np.arange(N)),\n            \"uint\": pd.UInt64Index(np.arange(N)),\n            \"float\": pd.Float64Index(np.random.randn(N)),\n            \"string\": tm.makeStringIndex(N),\n            \"datetime64[ns]\": pd.date_range(\"2011-01-01\", freq=\"H\", periods=N),\n            \"datetime64[ns, tz]\": pd.date_range(\n                \"2011-01-01\", freq=\"H\", periods=N, tz=\"Asia/Tokyo\"\n            ),\n        }[dtype]\n        if not unique:\n            data = data.repeat(5)\n        self.idx = data\n        # cache is_unique\n        self.idx.is_unique",
+        "code": "class Duplicated:\n    def time_duplicated(self, unique, keep, dtype):\n        self.idx.duplicated(keep=keep)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Duplicated:\n    def setup(self, unique, keep, dtype):\n        N = 10 ** 5\n        data = {\n            \"int\": pd.Index(np.arange(N), dtype=\"int64\"),\n            \"uint\": pd.Index(np.arange(N), dtype=\"uint64\"),\n            \"float\": pd.Index(np.random.randn(N), dtype=\"float64\"),\n            \"string\": tm.makeStringIndex(N),\n            \"datetime64[ns]\": pd.date_range(\"2011-01-01\", freq=\"H\", periods=N),\n            \"datetime64[ns, tz]\": pd.date_range(\n                \"2011-01-01\", freq=\"H\", periods=N, tz=\"Asia/Tokyo\"\n            ),\n        }[dtype]\n        if not unique:\n            data = data.repeat(5)\n        self.idx = data\n        # cache is_unique\n        self.idx.is_unique",
         "min_run_count": 2,
         "name": "algorithms.Duplicated.time_duplicated",
         "number": 0,
@@ -34,11 +34,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "094cd4e65f01e0edb3b9068df7371b3f5f7e37eaf16264867a5d74ca0b9efa26",
+        "version": "51bedc1b41018bb5feead7b43496a521aaaf1c6f28993009ab44c3df7f324058",
         "warmup_time": -1
     },
     "algorithms.Factorize.time_factorize": {
-        "code": "class Factorize:\n    def time_factorize(self, unique, sort, dtype):\n        pd.factorize(self.data, sort=sort)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Factorize:\n    def setup(self, unique, sort, dtype):\n        N = 10 ** 5\n        string_index = tm.makeStringIndex(N)\n        string_arrow = None\n        if dtype == \"string[pyarrow]\":\n            try:\n                string_arrow = pd.array(string_index, dtype=\"string[pyarrow]\")\n            except ImportError:\n                raise NotImplementedError\n    \n        data = {\n            \"int\": pd.Int64Index(np.arange(N)),\n            \"uint\": pd.UInt64Index(np.arange(N)),\n            \"float\": pd.Float64Index(np.random.randn(N)),\n            \"object\": string_index,\n            \"datetime64[ns]\": pd.date_range(\"2011-01-01\", freq=\"H\", periods=N),\n            \"datetime64[ns, tz]\": pd.date_range(\n                \"2011-01-01\", freq=\"H\", periods=N, tz=\"Asia/Tokyo\"\n            ),\n            \"Int64\": pd.array(np.arange(N), dtype=\"Int64\"),\n            \"boolean\": pd.array(np.random.randint(0, 2, N), dtype=\"boolean\"),\n            \"string[pyarrow]\": string_arrow,\n        }[dtype]\n        if not unique:\n            data = data.repeat(5)\n        self.data = data",
+        "code": "class Factorize:\n    def time_factorize(self, unique, sort, dtype):\n        pd.factorize(self.data, sort=sort)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Factorize:\n    def setup(self, unique, sort, dtype):\n        N = 10 ** 5\n        string_index = tm.makeStringIndex(N)\n        string_arrow = None\n        if dtype == \"string[pyarrow]\":\n            try:\n                string_arrow = pd.array(string_index, dtype=\"string[pyarrow]\")\n            except ImportError:\n                raise NotImplementedError\n    \n        data = {\n            \"int\": pd.Index(np.arange(N), dtype=\"int64\"),\n            \"uint\": pd.Index(np.arange(N), dtype=\"uint64\"),\n            \"float\": pd.Index(np.random.randn(N), dtype=\"float64\"),\n            \"object\": string_index,\n            \"datetime64[ns]\": pd.date_range(\"2011-01-01\", freq=\"H\", periods=N),\n            \"datetime64[ns, tz]\": pd.date_range(\n                \"2011-01-01\", freq=\"H\", periods=N, tz=\"Asia/Tokyo\"\n            ),\n            \"Int64\": pd.array(np.arange(N), dtype=\"Int64\"),\n            \"boolean\": pd.array(np.random.randint(0, 2, N), dtype=\"boolean\"),\n            \"string[pyarrow]\": string_arrow,\n        }[dtype]\n        if not unique:\n            data = data.repeat(5)\n        self.data = data",
         "min_run_count": 2,
         "name": "algorithms.Factorize.time_factorize",
         "number": 0,
@@ -74,7 +74,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "3fff787ddf77bbdbf468194d90cc2429e69a6889657463035f50901ef8f28e51",
+        "version": "016e8dd853c2030085393658c20dfce0b159d14d4e2f21c79fe796be0104335c",
         "warmup_time": -1
     },
     "algorithms.Hashing.time_frame": {
@@ -17175,6 +17175,35 @@
         "type": "time",
         "unit": "seconds",
         "version": "958fc2dfe9fbb7797c443ce83b375465a50d39572756f392d84591271d225ee5",
+        "warmup_time": -1
+    },
+    "sparse.Take.time_take": {
+        "code": "class Take:\n    def time_take(self, indices, allow_fill):\n        self.sp_arr.take(indices, allow_fill=allow_fill)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Take:\n    def setup(self, indices, allow_fill):\n        N = 1_000_000\n        fill_value = 0.0\n        arr = make_array(N, 1e-5, fill_value, np.float64)\n        self.sp_arr = SparseArray(arr, fill_value=fill_value)",
+        "min_run_count": 2,
+        "name": "sparse.Take.time_take",
+        "number": 0,
+        "param_names": [
+            "indices",
+            "allow_fill"
+        ],
+        "params": [
+            [
+                "array([0])",
+                "array([    0,     1,     2, ..., 99997, 99998, 99999])",
+                "array([-1, -1, -1, ..., -1, -1, -1])"
+            ],
+            [
+                "True",
+                "False"
+            ]
+        ],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "de40b85a6b156eead56c80f2a8a02564cec85e5cda7f49c947f0385fc4552dbb",
         "warmup_time": -1
     },
     "sparse.ToCoo.time_sparse_series_to_coo": {
