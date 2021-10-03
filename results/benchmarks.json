@@ -7341,6 +7341,43 @@
         "version": "a3e1f4e1015adc42c110e949d53af4156aaf847ce4514558f5bd6bef3390cc07",
         "warmup_time": -1
     },
+    "groupby.String.time_str_func": {
+        "code": "class String:\n    def time_str_func(self, dtype, method):\n        self.df.groupby(\"a\")[self.df.columns[1:]].agg(method)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass String:\n    def setup(self, dtype, method):\n        cols = list(\"abcdefghjkl\")\n        self.df = DataFrame(\n            np.random.randint(0, 100, size=(1_000_000, len(cols))),\n            columns=cols,\n            dtype=dtype,\n        )",
+        "min_run_count": 2,
+        "name": "groupby.String.time_str_func",
+        "number": 0,
+        "param_names": [
+            "dtype",
+            "method"
+        ],
+        "params": [
+            [
+                "'str'",
+                "'string[python]'"
+            ],
+            [
+                "'sum'",
+                "'prod'",
+                "'min'",
+                "'max'",
+                "'mean'",
+                "'median'",
+                "'var'",
+                "'first'",
+                "'last'",
+                "'any'",
+                "'all'"
+            ]
+        ],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "eb4b0307062743daac66c684e6741648a29514e205bdaab33e205f95cd67c2f8",
+        "warmup_time": -1
+    },
     "groupby.SumBools.time_groupby_sum_booleans": {
         "code": "class SumBools:\n    def time_groupby_sum_booleans(self):\n        self.df.groupby(\"ii\").sum()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass SumBools:\n    def setup(self):\n        N = 500\n        self.df = DataFrame({\"ii\": range(N), \"bb\": [True] * N})",
         "min_run_count": 2,
@@ -12602,6 +12639,29 @@
         "unit": "bytes",
         "version": "2d2ae2b598964ca4ec2ce6befed05ff0ed2c8833539c314cbc42c2a006d9abcf"
     },
+    "io.style.Render.peakmem_tooltips_render": {
+        "code": "class Render:\n    def peakmem_tooltips_render(self, cols, rows):\n        self._style_tooltips()\n        self.st._render_html(True, True)\n\n    def setup(self, cols, rows):\n        self.df = DataFrame(\n            np.random.randn(rows, cols),\n            columns=[f\"float_{i+1}\" for i in range(cols)],\n            index=[f\"row_{i+1}\" for i in range(rows)],\n        )",
+        "name": "io.style.Render.peakmem_tooltips_render",
+        "param_names": [
+            "cols",
+            "rows"
+        ],
+        "params": [
+            [
+                "12",
+                "24",
+                "36"
+            ],
+            [
+                "12",
+                "120"
+            ]
+        ],
+        "timeout": 60.0,
+        "type": "peakmemory",
+        "unit": "bytes",
+        "version": "f3165d89bad8a5256ce768ec97faaca1dc322cc15dfc6cce5c8f629872c4b625"
+    },
     "io.style.Render.time_apply_format_hide_render": {
         "code": "class Render:\n    def time_apply_format_hide_render(self, cols, rows):\n        self._style_apply_format_hide()\n        self.st._render_html(True, True)\n\n    def setup(self, cols, rows):\n        self.df = DataFrame(\n            np.random.randn(rows, cols),\n            columns=[f\"float_{i+1}\" for i in range(cols)],\n            index=[f\"row_{i+1}\" for i in range(rows)],\n        )",
         "min_run_count": 2,
@@ -12716,6 +12776,35 @@
         "type": "time",
         "unit": "seconds",
         "version": "2fe7b97954d549aadb2eb134d3d09b8c1334a640488b36869090ed4c430365ed",
+        "warmup_time": -1
+    },
+    "io.style.Render.time_tooltips_render": {
+        "code": "class Render:\n    def time_tooltips_render(self, cols, rows):\n        self._style_tooltips()\n        self.st._render_html(True, True)\n\n    def setup(self, cols, rows):\n        self.df = DataFrame(\n            np.random.randn(rows, cols),\n            columns=[f\"float_{i+1}\" for i in range(cols)],\n            index=[f\"row_{i+1}\" for i in range(rows)],\n        )",
+        "min_run_count": 2,
+        "name": "io.style.Render.time_tooltips_render",
+        "number": 0,
+        "param_names": [
+            "cols",
+            "rows"
+        ],
+        "params": [
+            [
+                "12",
+                "24",
+                "36"
+            ],
+            [
+                "12",
+                "120"
+            ]
+        ],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "bf6a27f9959b331a6f71cda4f842f4ceb8df92624979f2a522fe57cc98a5e34d",
         "warmup_time": -1
     },
     "join_merge.Align.time_series_align_int64_index": {
@@ -17135,6 +17224,38 @@
         "version": "195924096fa77c5284cc4c2886c3e4e1ec58441bb83c1afe52ee2d94f9987a1a",
         "warmup_time": -1
     },
+    "sparse.GetItem.time_integer_indexing": {
+        "code": "class GetItem:\n    def time_integer_indexing(self):\n        self.sp_arr[78]\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass GetItem:\n    def setup(self):\n        N = 1_000_000\n        arr = make_array(N, 1e-5, np.nan, np.float64)\n        self.sp_arr = SparseArray(arr)",
+        "min_run_count": 2,
+        "name": "sparse.GetItem.time_integer_indexing",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "e693094705bcdbac0543eabef058bd7a4cbd47fa0f6e21bf78c7888f6e3881a8",
+        "warmup_time": -1
+    },
+    "sparse.GetItem.time_slice": {
+        "code": "class GetItem:\n    def time_slice(self):\n        self.sp_arr[1:]\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass GetItem:\n    def setup(self):\n        N = 1_000_000\n        arr = make_array(N, 1e-5, np.nan, np.float64)\n        self.sp_arr = SparseArray(arr)",
+        "min_run_count": 2,
+        "name": "sparse.GetItem.time_slice",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "f08f2a3702730e36e464dd91fd27b15ba36ebd3cadb746b6520fb810362a6663",
+        "warmup_time": -1
+    },
     "sparse.MinMax.time_min_max": {
         "code": "class MinMax:\n    def time_min_max(self, func, fill_value):\n        getattr(self.sp_arr, func)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass MinMax:\n    def setup(self, func, fill_value):\n        N = 1_000_000\n        arr = make_array(N, 1e-5, fill_value, np.float64)\n        self.sp_arr = SparseArray(arr, fill_value=fill_value)",
         "min_run_count": 2,
@@ -17305,7 +17426,7 @@
         "warmup_time": -1
     },
     "sparse.ToCooFrame.time_to_coo": {
-        "code": "class ToCooFrame:\n    def time_to_coo(self):\n        self.df.sparse.to_coo()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToCooFrame:\n    def setup(self):\n        N = 10000\n        k = 10\n        arr = np.full((N, k), np.nan)\n        arr[0, 0] = 3.0\n        arr[12, 7] = -1.0\n        arr[0, 9] = 11.2\n        self.df = pd.DataFrame(arr, dtype=pd.SparseDtype(\"float\"))",
+        "code": "class ToCooFrame:\n    def time_to_coo(self):\n        self.df.sparse.to_coo()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToCooFrame:\n    def setup(self):\n        N = 10000\n        k = 10\n        arr = np.zeros((N, k), dtype=float)\n        arr[0, 0] = 3.0\n        arr[12, 7] = -1.0\n        arr[0, 9] = 11.2\n        self.df = pd.DataFrame(arr, dtype=pd.SparseDtype(\"float\", fill_value=0.0))",
         "min_run_count": 2,
         "name": "sparse.ToCooFrame.time_to_coo",
         "number": 0,
@@ -17317,7 +17438,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "02adc25ce9b88f6844fc85d0a55ded12976a0e32b6c8f1696ae782612b404a3d",
+        "version": "aa52b43e43b97a10066b7eb8a13b85c06203c3660e6293bf051b23418b51d48a",
         "warmup_time": -1
     },
     "stat_ops.Correlation.peakmem_corr_wide": {
