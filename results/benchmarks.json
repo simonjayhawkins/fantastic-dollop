@@ -9846,13 +9846,15 @@
         "warmup_time": -1
     },
     "indexing_engines.NumericEngineIndexing.time_get_loc": {
-        "code": "class NumericEngineIndexing:\n    def time_get_loc(self, engine_and_dtype, index_type):\n        self.data.get_loc(2)\n\n    def setup(self, engine_and_dtype, index_type):\n        engine, dtype = engine_and_dtype\n        N = 10 ** 5\n        values = list([1] * N + [2] * N + [3] * N)\n        arr = {\n            \"monotonic_incr\": np.array(values, dtype=dtype),\n            \"monotonic_decr\": np.array(list(reversed(values)), dtype=dtype),\n            \"non_monotonic\": np.array([1, 2, 3] * N, dtype=dtype),\n        }[index_type]\n    \n        self.data = engine(arr)\n        # code belows avoids populating the mapping etc. while timing.\n        self.data.get_loc(2)",
+        "code": "class NumericEngineIndexing:\n    def time_get_loc(self, engine_and_dtype, index_type, unique, N):\n        self.data.get_loc(self.key_early)\n\n    def setup(self, engine_and_dtype, index_type, unique, N):\n        engine, dtype = engine_and_dtype\n    \n        if index_type == \"monotonic_incr\":\n            if unique:\n                arr = np.arange(N * 3, dtype=dtype)\n            else:\n                values = list([1] * N + [2] * N + [3] * N)\n                arr = np.array(values, dtype=dtype)\n        elif index_type == \"monotonic_decr\":\n            if unique:\n                arr = np.arange(N * 3, dtype=dtype)[::-1]\n            else:\n                values = list([1] * N + [2] * N + [3] * N)\n                arr = np.array(values, dtype=dtype)[::-1]\n        else:\n            assert index_type == \"non_monotonic\"\n            if unique:\n                arr = np.empty(N * 3, dtype=dtype)\n                arr[:N] = np.arange(N * 2, N * 3, dtype=dtype)\n                arr[N:] = np.arange(N * 2, dtype=dtype)\n            else:\n                arr = np.array([1, 2, 3] * N, dtype=dtype)\n    \n        self.data = engine(arr)\n        # code belows avoids populating the mapping etc. while timing.\n        self.data.get_loc(2)\n    \n        self.key_middle = arr[len(arr) // 2]\n        self.key_early = arr[2]",
         "min_run_count": 2,
         "name": "indexing_engines.NumericEngineIndexing.time_get_loc",
         "number": 0,
         "param_names": [
             "engine_and_dtype",
-            "index_type"
+            "index_type",
+            "unique",
+            "N"
         ],
         "params": [
             [
@@ -9870,6 +9872,14 @@
                 "'monotonic_incr'",
                 "'monotonic_decr'",
                 "'non_monotonic'"
+            ],
+            [
+                "True",
+                "False"
+            ],
+            [
+                "100000",
+                "2000000"
             ]
         ],
         "repeat": 0,
@@ -9878,7 +9888,53 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "a3ed7b43acacc2e73cfdf39640a845a108885b5db4ae98f649878544b424c0d7",
+        "version": "eb49cbbf223b552f13727c50a1e3742ad38791c4b24c9d9b3c7dff9d456b637b",
+        "warmup_time": -1
+    },
+    "indexing_engines.NumericEngineIndexing.time_get_loc_near_middle": {
+        "code": "class NumericEngineIndexing:\n    def time_get_loc_near_middle(self, engine_and_dtype, index_type, unique, N):\n        # searchsorted performance may be different near the middle of a range\n        #  vs near an endpoint\n        self.data.get_loc(self.key_middle)\n\n    def setup(self, engine_and_dtype, index_type, unique, N):\n        engine, dtype = engine_and_dtype\n    \n        if index_type == \"monotonic_incr\":\n            if unique:\n                arr = np.arange(N * 3, dtype=dtype)\n            else:\n                values = list([1] * N + [2] * N + [3] * N)\n                arr = np.array(values, dtype=dtype)\n        elif index_type == \"monotonic_decr\":\n            if unique:\n                arr = np.arange(N * 3, dtype=dtype)[::-1]\n            else:\n                values = list([1] * N + [2] * N + [3] * N)\n                arr = np.array(values, dtype=dtype)[::-1]\n        else:\n            assert index_type == \"non_monotonic\"\n            if unique:\n                arr = np.empty(N * 3, dtype=dtype)\n                arr[:N] = np.arange(N * 2, N * 3, dtype=dtype)\n                arr[N:] = np.arange(N * 2, dtype=dtype)\n            else:\n                arr = np.array([1, 2, 3] * N, dtype=dtype)\n    \n        self.data = engine(arr)\n        # code belows avoids populating the mapping etc. while timing.\n        self.data.get_loc(2)\n    \n        self.key_middle = arr[len(arr) // 2]\n        self.key_early = arr[2]",
+        "min_run_count": 2,
+        "name": "indexing_engines.NumericEngineIndexing.time_get_loc_near_middle",
+        "number": 0,
+        "param_names": [
+            "engine_and_dtype",
+            "index_type",
+            "unique",
+            "N"
+        ],
+        "params": [
+            [
+                "(<class 'pandas._libs.index.Int64Engine'>, <class 'numpy.int64'>)",
+                "(<class 'pandas._libs.index.Int32Engine'>, <class 'numpy.int32'>)",
+                "(<class 'pandas._libs.index.Int16Engine'>, <class 'numpy.int16'>)",
+                "(<class 'pandas._libs.index.Int8Engine'>, <class 'numpy.int8'>)",
+                "(<class 'pandas._libs.index.UInt64Engine'>, <class 'numpy.uint64'>)",
+                "(<class 'pandas._libs.index.UInt32Engine'>, <class 'numpy.uint32'>)",
+                "(<class 'pandas._libs.index.UInt8Engine'>, <class 'numpy.uint8'>)",
+                "(<class 'pandas._libs.index.Float64Engine'>, <class 'numpy.float64'>)",
+                "(<class 'pandas._libs.index.Float32Engine'>, <class 'numpy.float32'>)"
+            ],
+            [
+                "'monotonic_incr'",
+                "'monotonic_decr'",
+                "'non_monotonic'"
+            ],
+            [
+                "True",
+                "False"
+            ],
+            [
+                "100000",
+                "2000000"
+            ]
+        ],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "6bd3ade508d6db6ef376f66c545a8ca5531e1ed703ece1938476702134c89ccb",
         "warmup_time": -1
     },
     "indexing_engines.ObjectEngineIndexing.time_get_loc": {
@@ -10959,6 +11015,22 @@
         "type": "time",
         "unit": "seconds",
         "version": "fe3fa17b401e13d8d7fb9cb246219140f2f15d26b7591c5c2720dbbae5869e48",
+        "warmup_time": -1
+    },
+    "io.csv.ReadCSVMemMapUTF8.time_read_memmapped_utf8": {
+        "code": "class ReadCSVMemMapUTF8:\n    def time_read_memmapped_utf8(self):\n        read_csv(self.fname, header=None, memory_map=True, encoding=\"utf-8\", engine=\"c\")\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ReadCSVMemMapUTF8:\n    def setup(self):\n        lines = []\n        line_length = 128\n        start_char = \" \"\n        end_char = \"\\U00010080\"\n        # This for loop creates a list of 128-char strings\n        # consisting of consecutive Unicode chars\n        for lnum in range(ord(start_char), ord(end_char), line_length):\n            line = \"\".join([chr(c) for c in range(lnum, lnum + 0x80)]) + \"\\n\"\n            try:\n                line.encode(\"utf-8\")\n            except UnicodeEncodeError:\n                # Some 16-bit words are not valid Unicode chars and must be skipped\n                continue\n            lines.append(line)\n        df = DataFrame(lines)\n        df = concat([df for n in range(100)], ignore_index=True)\n        df.to_csv(self.fname, index=False, header=False, encoding=\"utf-8\")",
+        "min_run_count": 2,
+        "name": "io.csv.ReadCSVMemMapUTF8.time_read_memmapped_utf8",
+        "number": 5,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "28f7fd520f718e3d43c75304bfe758d8db2e0e48f9ecbcc93c96af3d09bb34c5",
         "warmup_time": -1
     },
     "io.csv.ReadCSVMemoryGrowth.mem_parser_chunks": {
