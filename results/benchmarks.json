@@ -8619,6 +8619,38 @@
         "version": "73d3ae38ff9c96f63c1a6bcb78c682aca66a5670ef0f11df83d69fadcc910b99",
         "warmup_time": -1
     },
+    "index_object.Range.time_sort_values_asc": {
+        "code": "class Range:\n    def time_sort_values_asc(self):\n        self.idx_inc.sort_values()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Range:\n    def setup(self):\n        self.idx_inc = RangeIndex(start=0, stop=10 ** 6, step=3)\n        self.idx_dec = RangeIndex(start=10 ** 6, stop=-1, step=-3)",
+        "min_run_count": 2,
+        "name": "index_object.Range.time_sort_values_asc",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "2f1ae0a8cc48a715d768e9808ad09bf6eb159042e5e80f5c3ffbc8d971c2c0ca",
+        "warmup_time": -1
+    },
+    "index_object.Range.time_sort_values_des": {
+        "code": "class Range:\n    def time_sort_values_des(self):\n        self.idx_inc.sort_values(ascending=False)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Range:\n    def setup(self):\n        self.idx_inc = RangeIndex(start=0, stop=10 ** 6, step=3)\n        self.idx_dec = RangeIndex(start=10 ** 6, stop=-1, step=-3)",
+        "min_run_count": 2,
+        "name": "index_object.Range.time_sort_values_des",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "1a949a3132c2bd752e2cc5d1b9f25ad2e9fe4f5f188488c7b546eeabb2e1790b",
+        "warmup_time": -1
+    },
     "index_object.SetDisjoint.time_datetime_difference_disjoint": {
         "code": "class SetDisjoint:\n    def time_datetime_difference_disjoint(self):\n        self.datetime_left.difference(self.datetime_right)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass SetDisjoint:\n    def setup(self):\n        N = 10 ** 5\n        B = N + 20000\n        self.datetime_left = DatetimeIndex(range(N))\n        self.datetime_right = DatetimeIndex(range(N, B))",
         "min_run_count": 2,
@@ -10441,6 +10473,22 @@
         "type": "time",
         "unit": "seconds",
         "version": "ffda3795a72b4023991d1daa18e3b0a3cabffd330b369a59c89a7d6c8d190102",
+        "warmup_time": -1
+    },
+    "inference.ToDatetimeInferDatetimeFormat.time_infer_datetime_format": {
+        "code": "class ToDatetimeInferDatetimeFormat:\n    def time_infer_datetime_format(self):\n        to_datetime(self.strings, infer_datetime_format=True)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ToDatetimeInferDatetimeFormat:\n    def setup(self):\n        rng = date_range(start=\"1/1/2000\", periods=100000, freq=\"H\")\n        self.strings = rng.strftime(\"%Y-%m-%d %H:%M:%S\").tolist()",
+        "min_run_count": 2,
+        "name": "inference.ToDatetimeInferDatetimeFormat.time_infer_datetime_format",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "1c3c74ed99381261b9280915b0699af46b2fa2fd04caecf83328d1bc6eabf06e",
         "warmup_time": -1
     },
     "inference.ToDatetimeNONISO8601.time_different_offset": {
