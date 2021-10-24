@@ -1,0 +1,9 @@
+{
+    "arch": "x86_64",
+    "cpu": "Intel(R) Xeon(R) CPU E5-2667 v2 @ 3.30GHz",
+    "machine": "r620",
+    "num_cpu": "16",
+    "os": "Linux 5.4.0-88-generic",
+    "ram": "65794132",
+    "version": 1
+}
