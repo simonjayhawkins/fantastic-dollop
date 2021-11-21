@@ -15793,89 +15793,13 @@
         "warmup_time": -1
     },
     "rolling.EWMMethods.time_ewm": {
-        "code": "class EWMMethods:\n    def time_ewm(self, constructor, window, dtype, method):\n        getattr(self.ewm, method)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass EWMMethods:\n    def setup(self, constructor, window, dtype, method):\n        N = 10 ** 5\n        arr = (100 * np.random.random(N)).astype(dtype)\n        times = pd.date_range(\"1900\", periods=N, freq=\"23s\")\n        self.ewm = getattr(pd, constructor)(arr).ewm(halflife=window)\n        self.ewm_times = getattr(pd, constructor)(arr).ewm(\n            halflife=\"1 Day\", times=times\n        )",
+        "code": "class EWMMethods:\n    def time_ewm(self, constructor, kwargs_method, dtype):\n        getattr(self.ewm, self.method)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass EWMMethods:\n    def setup(self, constructor, kwargs_method, dtype):\n        N = 10 ** 5\n        kwargs, method = kwargs_method\n        arr = (100 * np.random.random(N)).astype(dtype)\n        self.method = method\n        self.ewm = getattr(pd, constructor)(arr).ewm(**kwargs)",
         "min_run_count": 2,
         "name": "rolling.EWMMethods.time_ewm",
         "number": 0,
         "param_names": [
             "constructor",
-            "window",
-            "dtype",
-            "method"
-        ],
-        "params": [
-            [
-                "'DataFrame'",
-                "'Series'"
-            ],
-            [
-                "10",
-                "1000"
-            ],
-            [
-                "'int'",
-                "'float'"
-            ],
-            [
-                "'mean'",
-                "'std'"
-            ]
-        ],
-        "repeat": 0,
-        "rounds": 2,
-        "sample_time": 0.01,
-        "timeout": 60.0,
-        "type": "time",
-        "unit": "seconds",
-        "version": "efc9a78005a3e487739969612a92c12a7e0bc0d314d5335c3e7441a28d2b5a2c",
-        "warmup_time": -1
-    },
-    "rolling.EWMMethods.time_ewm_times": {
-        "code": "class EWMMethods:\n    def time_ewm_times(self, constructor, window, dtype, method):\n        self.ewm_times.mean()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass EWMMethods:\n    def setup(self, constructor, window, dtype, method):\n        N = 10 ** 5\n        arr = (100 * np.random.random(N)).astype(dtype)\n        times = pd.date_range(\"1900\", periods=N, freq=\"23s\")\n        self.ewm = getattr(pd, constructor)(arr).ewm(halflife=window)\n        self.ewm_times = getattr(pd, constructor)(arr).ewm(\n            halflife=\"1 Day\", times=times\n        )",
-        "min_run_count": 2,
-        "name": "rolling.EWMMethods.time_ewm_times",
-        "number": 0,
-        "param_names": [
-            "constructor",
-            "window",
-            "dtype",
-            "method"
-        ],
-        "params": [
-            [
-                "'DataFrame'",
-                "'Series'"
-            ],
-            [
-                "10",
-                "1000"
-            ],
-            [
-                "'int'",
-                "'float'"
-            ],
-            [
-                "'mean'",
-                "'std'"
-            ]
-        ],
-        "repeat": 0,
-        "rounds": 2,
-        "sample_time": 0.01,
-        "timeout": 60.0,
-        "type": "time",
-        "unit": "seconds",
-        "version": "4f4c80ce73c0b45de998d82584c992d51914d9faba884d3b69dff9f766eb825e",
-        "warmup_time": -1
-    },
-    "rolling.ExpandingMethods.time_expanding": {
-        "code": "class ExpandingMethods:\n    def time_expanding(self, constructor, dtype, method):\n        getattr(self.expanding, method)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ExpandingMethods:\n    def setup(self, constructor, dtype, method):\n        N = 10 ** 5\n        N_groupby = 100\n        arr = (100 * np.random.random(N)).astype(dtype)\n        self.expanding = getattr(pd, constructor)(arr).expanding()\n        self.expanding_groupby = (\n            pd.DataFrame({\"A\": arr[:N_groupby], \"B\": range(N_groupby)})\n            .groupby(\"B\")\n            .expanding()\n        )",
-        "min_run_count": 2,
-        "name": "rolling.ExpandingMethods.time_expanding",
-        "number": 0,
-        "param_names": [
-            "constructor",
-            "window",
+            "kwargs_method",
             "dtype"
         ],
         "params": [
@@ -15884,19 +15808,15 @@
                 "'Series'"
             ],
             [
-                "'int'",
-                "'float'"
+                "({'halflife': 10}, 'mean')",
+                "({'halflife': 10}, 'std')",
+                "({'halflife': 1000}, 'mean')",
+                "({'halflife': 1000}, 'std')",
+                "({'halflife': '1 Day', 'times': DatetimeIndex(['1900-01-01 00:00:00', '1900-01-01 00:00:23',\n               '1900-01-01 00:00:46', '1900-01-01 00:01:09',\n               '1900-01-01 00:01:32', '1900-01-01 00:01:55',\n               '1900-01-01 00:02:18', '1900-01-01 00:02:41',\n               '1900-01-01 00:03:04', '1900-01-01 00:03:27',\n               ...\n               '1900-01-27 14:49:30', '1900-01-27 14:49:53',\n               '1900-01-27 14:50:16', '1900-01-27 14:50:39',\n               '1900-01-27 14:51:02', '1900-01-27 14:51:25',\n               '1900-01-27 14:51:48', '1900-01-27 14:52:11',\n               '1900-01-27 14:52:34', '1900-01-27 14:52:57'],\n              dtype='datetime64[ns]', length=100000, freq='23S')}, 'mean')"
             ],
             [
-                "'median'",
-                "'mean'",
-                "'max'",
-                "'min'",
-                "'std'",
-                "'count'",
-                "'skew'",
-                "'kurt'",
-                "'sum'"
+                "'int'",
+                "'float'"
             ]
         ],
         "repeat": 0,
@@ -15905,47 +15825,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "4ff8fbe80b7d99f4b2c4926387dcc727c89d2e2704664005f3faf5fc38aa0828",
-        "warmup_time": -1
-    },
-    "rolling.ExpandingMethods.time_expanding_groupby": {
-        "code": "class ExpandingMethods:\n    def time_expanding_groupby(self, constructor, dtype, method):\n        getattr(self.expanding_groupby, method)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ExpandingMethods:\n    def setup(self, constructor, dtype, method):\n        N = 10 ** 5\n        N_groupby = 100\n        arr = (100 * np.random.random(N)).astype(dtype)\n        self.expanding = getattr(pd, constructor)(arr).expanding()\n        self.expanding_groupby = (\n            pd.DataFrame({\"A\": arr[:N_groupby], \"B\": range(N_groupby)})\n            .groupby(\"B\")\n            .expanding()\n        )",
-        "min_run_count": 2,
-        "name": "rolling.ExpandingMethods.time_expanding_groupby",
-        "number": 0,
-        "param_names": [
-            "constructor",
-            "window",
-            "dtype"
-        ],
-        "params": [
-            [
-                "'DataFrame'",
-                "'Series'"
-            ],
-            [
-                "'int'",
-                "'float'"
-            ],
-            [
-                "'median'",
-                "'mean'",
-                "'max'",
-                "'min'",
-                "'std'",
-                "'count'",
-                "'skew'",
-                "'kurt'",
-                "'sum'"
-            ]
-        ],
-        "repeat": 0,
-        "rounds": 2,
-        "sample_time": 0.01,
-        "timeout": 60.0,
-        "type": "time",
-        "unit": "seconds",
-        "version": "31c4303884b363771c0fa8398b307b64c171dcb84fccff2d4eedc85c11ef7078",
+        "version": "bed46ecdfc05e4720f3463e324b3a3643e20b6e43e5cffcf9e2aa73f5e004660",
         "warmup_time": -1
     },
     "rolling.ForwardWindowMethods.peakmem_rolling": {
@@ -16026,13 +15906,14 @@
         "version": "d73db6a725be9e2e87cfcc791686329b31a096fcacce9943ff138cb672213f66",
         "warmup_time": -1
     },
-    "rolling.Groupby.time_rolling_int": {
-        "code": "class Groupby:\n    def time_rolling_int(self, method):\n        getattr(self.groupby_roll_int, method)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Groupby:\n    def setup(self, method):\n        N = 1000\n        df = pd.DataFrame(\n            {\n                \"A\": [str(i) for i in range(N)] * 10,\n                \"B\": list(range(N)) * 10,\n                \"C\": pd.date_range(start=\"1900-01-01\", freq=\"1min\", periods=N * 10),\n            }\n        )\n        self.groupby_roll_int = df.groupby(\"A\").rolling(window=2)\n        self.groupby_roll_offset = df.groupby(\"A\").rolling(window=\"30s\", on=\"C\")",
+    "rolling.Groupby.time_method": {
+        "code": "class Groupby:\n    def time_method(self, method, window_kwargs):\n        getattr(self.groupby_window, method)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Groupby:\n    def setup(self, method, window_kwargs):\n        N = 1000\n        window, kwargs = window_kwargs\n        df = pd.DataFrame(\n            {\n                \"A\": [str(i) for i in range(N)] * 10,\n                \"B\": list(range(N)) * 10,\n                \"C\": pd.date_range(start=\"1900-01-01\", freq=\"1min\", periods=N * 10),\n            }\n        )\n        self.groupby_window = getattr(df.groupby(\"A\"), window)(**kwargs)",
         "min_run_count": 2,
-        "name": "rolling.Groupby.time_rolling_int",
+        "name": "rolling.Groupby.time_method",
         "number": 0,
         "param_names": [
-            "param1"
+            "param1",
+            "param2"
         ],
         "params": [
             [
@@ -16043,34 +15924,11 @@
                 "'min'",
                 "'kurt'",
                 "'sum' (1)"
-            ]
-        ],
-        "repeat": 0,
-        "rounds": 2,
-        "sample_time": 0.01,
-        "timeout": 60.0,
-        "type": "time",
-        "unit": "seconds",
-        "version": "5203ac1077e2b25e7149017fe63366bab2d015e68422eec953155ceac0eb659f",
-        "warmup_time": -1
-    },
-    "rolling.Groupby.time_rolling_offset": {
-        "code": "class Groupby:\n    def time_rolling_offset(self, method):\n        getattr(self.groupby_roll_offset, method)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Groupby:\n    def setup(self, method):\n        N = 1000\n        df = pd.DataFrame(\n            {\n                \"A\": [str(i) for i in range(N)] * 10,\n                \"B\": list(range(N)) * 10,\n                \"C\": pd.date_range(start=\"1900-01-01\", freq=\"1min\", periods=N * 10),\n            }\n        )\n        self.groupby_roll_int = df.groupby(\"A\").rolling(window=2)\n        self.groupby_roll_offset = df.groupby(\"A\").rolling(window=\"30s\", on=\"C\")",
-        "min_run_count": 2,
-        "name": "rolling.Groupby.time_rolling_offset",
-        "number": 0,
-        "param_names": [
-            "param1"
-        ],
-        "params": [
+            ],
             [
-                "'sum' (0)",
-                "'median'",
-                "'mean'",
-                "'max'",
-                "'min'",
-                "'kurt'",
-                "'sum' (1)"
+                "('rolling', {'window': 2})",
+                "('rolling', {'window': '30s', 'on': 'C'})",
+                "('expanding', {})"
             ]
         ],
         "repeat": 0,
@@ -16079,7 +15937,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "dfa6c239ec7ac87d50237535ce44695196b9e49de7dbb819d0d9cdfca86345ed",
+        "version": "2c03af03887e4ced844b889037c828cde675ebcd62c97d9883f3842f8b047ac8",
         "warmup_time": -1
     },
     "rolling.GroupbyEWM.time_groupby_method": {
@@ -16146,12 +16004,12 @@
         "version": "31a34a6b020d62e4c7b595aeb804a131f135c1fd1497365577c3bbf2fe7c511c",
         "warmup_time": -1
     },
-    "rolling.Methods.peakmem_rolling": {
-        "code": "class Methods:\n    def peakmem_rolling(self, constructor, window, dtype, method):\n        getattr(self.roll, method)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Methods:\n    def setup(self, constructor, window, dtype, method):\n        N = 10 ** 5\n        arr = (100 * np.random.random(N)).astype(dtype)\n        self.roll = getattr(pd, constructor)(arr).rolling(window)",
-        "name": "rolling.Methods.peakmem_rolling",
+    "rolling.Methods.peakmem_method": {
+        "code": "class Methods:\n    def peakmem_method(self, constructor, window_kwargs, dtype, method):\n        getattr(self.window, method)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Methods:\n    def setup(self, constructor, window_kwargs, dtype, method):\n        N = 10 ** 5\n        window, kwargs = window_kwargs\n        arr = (100 * np.random.random(N)).astype(dtype)\n        obj = getattr(pd, constructor)(arr)\n        self.window = getattr(obj, window)(**kwargs)",
+        "name": "rolling.Methods.peakmem_method",
         "param_names": [
             "constructor",
-            "window",
+            "window_kwargs",
             "dtype",
             "method"
         ],
@@ -16161,8 +16019,9 @@
                 "'Series'"
             ],
             [
-                "10",
-                "1000"
+                "('rolling', {'window': 10})",
+                "('rolling', {'window': 1000})",
+                "('expanding', {})"
             ],
             [
                 "'int'",
@@ -16177,22 +16036,23 @@
                 "'count'",
                 "'skew'",
                 "'kurt'",
-                "'sum'"
+                "'sum'",
+                "'sem'"
             ]
         ],
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "f701e3ae7779f7d07be7142e3a7954a156605212710b3525d0c32cc53e921370"
+        "version": "f1003300698d8b144087b4c19730c40dd6f30d30a0e747037d7d7e348442349f"
     },
-    "rolling.Methods.time_rolling": {
-        "code": "class Methods:\n    def time_rolling(self, constructor, window, dtype, method):\n        getattr(self.roll, method)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Methods:\n    def setup(self, constructor, window, dtype, method):\n        N = 10 ** 5\n        arr = (100 * np.random.random(N)).astype(dtype)\n        self.roll = getattr(pd, constructor)(arr).rolling(window)",
+    "rolling.Methods.time_method": {
+        "code": "class Methods:\n    def time_method(self, constructor, window_kwargs, dtype, method):\n        getattr(self.window, method)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Methods:\n    def setup(self, constructor, window_kwargs, dtype, method):\n        N = 10 ** 5\n        window, kwargs = window_kwargs\n        arr = (100 * np.random.random(N)).astype(dtype)\n        obj = getattr(pd, constructor)(arr)\n        self.window = getattr(obj, window)(**kwargs)",
         "min_run_count": 2,
-        "name": "rolling.Methods.time_rolling",
+        "name": "rolling.Methods.time_method",
         "number": 0,
         "param_names": [
             "constructor",
-            "window",
+            "window_kwargs",
             "dtype",
             "method"
         ],
@@ -16202,8 +16062,9 @@
                 "'Series'"
             ],
             [
-                "10",
-                "1000"
+                "('rolling', {'window': 10})",
+                "('rolling', {'window': 1000})",
+                "('expanding', {})"
             ],
             [
                 "'int'",
@@ -16218,58 +16079,8 @@
                 "'count'",
                 "'skew'",
                 "'kurt'",
-                "'sum'"
-            ]
-        ],
-        "repeat": 0,
-        "rounds": 2,
-        "sample_time": 0.01,
-        "timeout": 60.0,
-        "type": "time",
-        "unit": "seconds",
-        "version": "cfb9949400cb967dc45bbf3be65a1e0a41ceeea05bc37e385c2196d9da4ed178",
-        "warmup_time": -1
-    },
-    "rolling.NumbaEngine.time_expanding_apply": {
-        "code": "class NumbaEngine:\n    def time_expanding_apply(self, constructor, dtype, function, method, parallel, col):\n        with warnings.catch_warnings(record=True):\n            self.expand.apply(\n                function, raw=True, engine=\"numba\", engine_kwargs={\"parallel\": parallel}\n            )\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass NumbaEngine:\n    def setup(self, constructor, dtype, function, method, parallel, cols):\n        N = 10 ** 3\n        shape = (N, cols) if cols is not None and constructor != \"Series\" else N\n        arr = (100 * np.random.random(shape)).astype(dtype)\n        data = getattr(pd, constructor)(arr)\n    \n        # Warm the cache\n        with warnings.catch_warnings(record=True):\n            # Catch parallel=True not being applicable e.g. 1D data\n            self.roll = data.rolling(10)\n            self.roll.apply(\n                function, raw=True, engine=\"numba\", engine_kwargs={\"parallel\": parallel}\n            )\n            getattr(self.roll, method)(\n                engine=\"numba\", engine_kwargs={\"parallel\": parallel}\n            )\n    \n            self.expand = data.expanding()\n            self.expand.apply(\n                function, raw=True, engine=\"numba\", engine_kwargs={\"parallel\": parallel}\n            )",
-        "min_run_count": 2,
-        "name": "rolling.NumbaEngine.time_expanding_apply",
-        "number": 0,
-        "param_names": [
-            "constructor",
-            "dtype",
-            "function",
-            "method",
-            "parallel",
-            "cols"
-        ],
-        "params": [
-            [
-                "'DataFrame'",
-                "'Series'"
-            ],
-            [
-                "'int'",
-                "'float'"
-            ],
-            [
-                "<function sum>",
-                "<function NumbaEngine.<lambda>>"
-            ],
-            [
                 "'sum'",
-                "'max'",
-                "'min'",
-                "'median'",
-                "'mean'"
-            ],
-            [
-                "True",
-                "False"
-            ],
-            [
-                "None",
-                "100"
+                "'sem'"
             ]
         ],
         "repeat": 0,
@@ -16278,126 +16089,24 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "00afe9202c6d7010616e374340431c04f183eee52f552f5baae61025259a46d9",
-        "warmup_time": -1
-    },
-    "rolling.NumbaEngine.time_rolling_apply": {
-        "code": "class NumbaEngine:\n    def time_rolling_apply(self, constructor, dtype, function, method, parallel, col):\n        with warnings.catch_warnings(record=True):\n            self.roll.apply(\n                function, raw=True, engine=\"numba\", engine_kwargs={\"parallel\": parallel}\n            )\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass NumbaEngine:\n    def setup(self, constructor, dtype, function, method, parallel, cols):\n        N = 10 ** 3\n        shape = (N, cols) if cols is not None and constructor != \"Series\" else N\n        arr = (100 * np.random.random(shape)).astype(dtype)\n        data = getattr(pd, constructor)(arr)\n    \n        # Warm the cache\n        with warnings.catch_warnings(record=True):\n            # Catch parallel=True not being applicable e.g. 1D data\n            self.roll = data.rolling(10)\n            self.roll.apply(\n                function, raw=True, engine=\"numba\", engine_kwargs={\"parallel\": parallel}\n            )\n            getattr(self.roll, method)(\n                engine=\"numba\", engine_kwargs={\"parallel\": parallel}\n            )\n    \n            self.expand = data.expanding()\n            self.expand.apply(\n                function, raw=True, engine=\"numba\", engine_kwargs={\"parallel\": parallel}\n            )",
-        "min_run_count": 2,
-        "name": "rolling.NumbaEngine.time_rolling_apply",
-        "number": 0,
-        "param_names": [
-            "constructor",
-            "dtype",
-            "function",
-            "method",
-            "parallel",
-            "cols"
-        ],
-        "params": [
-            [
-                "'DataFrame'",
-                "'Series'"
-            ],
-            [
-                "'int'",
-                "'float'"
-            ],
-            [
-                "<function sum>",
-                "<function NumbaEngine.<lambda>>"
-            ],
-            [
-                "'sum'",
-                "'max'",
-                "'min'",
-                "'median'",
-                "'mean'"
-            ],
-            [
-                "True",
-                "False"
-            ],
-            [
-                "None",
-                "100"
-            ]
-        ],
-        "repeat": 0,
-        "rounds": 2,
-        "sample_time": 0.01,
-        "timeout": 60.0,
-        "type": "time",
-        "unit": "seconds",
-        "version": "752ae4373b6146eeb39f88d0cbcdcf175f3f1f41dc055151e8dbcd685ca9d444",
-        "warmup_time": -1
-    },
-    "rolling.NumbaEngine.time_rolling_methods": {
-        "code": "class NumbaEngine:\n    def time_rolling_methods(self, constructor, dtype, function, method, parallel, col):\n        with warnings.catch_warnings(record=True):\n            getattr(self.roll, method)(\n                engine=\"numba\", engine_kwargs={\"parallel\": parallel}\n            )\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass NumbaEngine:\n    def setup(self, constructor, dtype, function, method, parallel, cols):\n        N = 10 ** 3\n        shape = (N, cols) if cols is not None and constructor != \"Series\" else N\n        arr = (100 * np.random.random(shape)).astype(dtype)\n        data = getattr(pd, constructor)(arr)\n    \n        # Warm the cache\n        with warnings.catch_warnings(record=True):\n            # Catch parallel=True not being applicable e.g. 1D data\n            self.roll = data.rolling(10)\n            self.roll.apply(\n                function, raw=True, engine=\"numba\", engine_kwargs={\"parallel\": parallel}\n            )\n            getattr(self.roll, method)(\n                engine=\"numba\", engine_kwargs={\"parallel\": parallel}\n            )\n    \n            self.expand = data.expanding()\n            self.expand.apply(\n                function, raw=True, engine=\"numba\", engine_kwargs={\"parallel\": parallel}\n            )",
-        "min_run_count": 2,
-        "name": "rolling.NumbaEngine.time_rolling_methods",
-        "number": 0,
-        "param_names": [
-            "constructor",
-            "dtype",
-            "function",
-            "method",
-            "parallel",
-            "cols"
-        ],
-        "params": [
-            [
-                "'DataFrame'",
-                "'Series'"
-            ],
-            [
-                "'int'",
-                "'float'"
-            ],
-            [
-                "<function sum>",
-                "<function NumbaEngine.<lambda>>"
-            ],
-            [
-                "'sum'",
-                "'max'",
-                "'min'",
-                "'median'",
-                "'mean'"
-            ],
-            [
-                "True",
-                "False"
-            ],
-            [
-                "None",
-                "100"
-            ]
-        ],
-        "repeat": 0,
-        "rounds": 2,
-        "sample_time": 0.01,
-        "timeout": 60.0,
-        "type": "time",
-        "unit": "seconds",
-        "version": "96f56960f7169abce10831bc5dd9aa6ba82d1436b95b172c2aee7bf38ce0a072",
+        "version": "8326fb0b91007e94f867d4a8e4415e63df2823c265525e17afb6f14255673c93",
         "warmup_time": -1
     },
     "rolling.Pairwise.time_groupby": {
-        "code": "class Pairwise:\n    def time_groupby(self, window, method, pairwise):\n        if window is None:\n            r = self.df_group.expanding()\n        else:\n            r = self.df_group.rolling(window=window)\n        getattr(r, method)(self.df, pairwise=pairwise)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Pairwise:\n    def setup(self, window, method, pairwise):\n        N = 10 ** 4\n        n_groups = 20\n        groups = [i for _ in range(N // n_groups) for i in range(n_groups)]\n        arr = np.random.random(N)\n        self.df = pd.DataFrame(arr)\n        self.df_group = pd.DataFrame({\"A\": groups, \"B\": arr}).groupby(\"A\")",
+        "code": "class Pairwise:\n    def time_groupby(self, kwargs_window, method, pairwise):\n        getattr(self.window_group, method)(self.df, pairwise=pairwise)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Pairwise:\n    def setup(self, kwargs_window, method, pairwise):\n        N = 10 ** 4\n        n_groups = 20\n        kwargs, window = kwargs_window\n        groups = [i for _ in range(N // n_groups) for i in range(n_groups)]\n        arr = np.random.random(N)\n        self.df = pd.DataFrame(arr)\n        self.window = getattr(self.df, window)(**kwargs)\n        self.window_group = getattr(\n            pd.DataFrame({\"A\": groups, \"B\": arr}).groupby(\"A\"), window\n        )(**kwargs)",
         "min_run_count": 2,
         "name": "rolling.Pairwise.time_groupby",
         "number": 0,
         "param_names": [
-            "window",
+            "window_kwargs",
             "method",
             "pairwise"
         ],
         "params": [
             [
-                "10",
-                "1000",
-                "None"
+                "({'window': 10}, 'rolling')",
+                "({'window': 1000}, 'rolling')",
+                "({}, 'expanding')"
             ],
             [
                 "'corr'",
@@ -16414,24 +16123,24 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "67e34411cdbdd70e4e5a540b6dcfabe5c76f0ba6f5ad1ef3d112e3c940be7774",
+        "version": "7ad59a65224d38be0a7399006354776e5e301b537862f3041ccdf793f044b2ea",
         "warmup_time": -1
     },
     "rolling.Pairwise.time_pairwise": {
-        "code": "class Pairwise:\n    def time_pairwise(self, window, method, pairwise):\n        if window is None:\n            r = self.df.expanding()\n        else:\n            r = self.df.rolling(window=window)\n        getattr(r, method)(self.df, pairwise=pairwise)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Pairwise:\n    def setup(self, window, method, pairwise):\n        N = 10 ** 4\n        n_groups = 20\n        groups = [i for _ in range(N // n_groups) for i in range(n_groups)]\n        arr = np.random.random(N)\n        self.df = pd.DataFrame(arr)\n        self.df_group = pd.DataFrame({\"A\": groups, \"B\": arr}).groupby(\"A\")",
+        "code": "class Pairwise:\n    def time_pairwise(self, kwargs_window, method, pairwise):\n        getattr(self.window, method)(self.df, pairwise=pairwise)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass Pairwise:\n    def setup(self, kwargs_window, method, pairwise):\n        N = 10 ** 4\n        n_groups = 20\n        kwargs, window = kwargs_window\n        groups = [i for _ in range(N // n_groups) for i in range(n_groups)]\n        arr = np.random.random(N)\n        self.df = pd.DataFrame(arr)\n        self.window = getattr(self.df, window)(**kwargs)\n        self.window_group = getattr(\n            pd.DataFrame({\"A\": groups, \"B\": arr}).groupby(\"A\"), window\n        )(**kwargs)",
         "min_run_count": 2,
         "name": "rolling.Pairwise.time_pairwise",
         "number": 0,
         "param_names": [
-            "window",
+            "window_kwargs",
             "method",
             "pairwise"
         ],
         "params": [
             [
-                "10",
-                "1000",
-                "None"
+                "({'window': 10}, 'rolling')",
+                "({'window': 1000}, 'rolling')",
+                "({}, 'expanding')"
             ],
             [
                 "'corr'",
@@ -16448,7 +16157,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "9ec4f179365efe76e1f498fdec7da8a64c334399d5b35cf06d98409b3041058c",
+        "version": "169ca723fe6ce3bb1810336c4b66a0a0280091d09400cd151af3a219937aaa35",
         "warmup_time": -1
     },
     "rolling.PeakMemFixedWindowMinMax.peakmem_fixed": {
@@ -16610,9 +16319,9 @@
         "version": "446dcdc251bda1381a3cf943305e8a6a22ea15ca4513ec2dc7454a8692ab99ad",
         "warmup_time": -1
     },
-    "rolling.VariableWindowMethods.peakmem_rolling": {
-        "code": "class Methods:\n    def peakmem_rolling(self, constructor, window, dtype, method):\n        getattr(self.roll, method)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass VariableWindowMethods:\n    def setup(self, constructor, window, dtype, method):\n        N = 10 ** 5\n        arr = (100 * np.random.random(N)).astype(dtype)\n        index = pd.date_range(\"2017-01-01\", periods=N, freq=\"5s\")\n        self.roll = getattr(pd, constructor)(arr, index=index).rolling(window)",
-        "name": "rolling.VariableWindowMethods.peakmem_rolling",
+    "rolling.VariableWindowMethods.peakmem_method": {
+        "code": "class Methods:\n    def peakmem_method(self, constructor, window_kwargs, dtype, method):\n        getattr(self.window, method)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass VariableWindowMethods:\n    def setup(self, constructor, window, dtype, method):\n        N = 10 ** 5\n        arr = (100 * np.random.random(N)).astype(dtype)\n        index = pd.date_range(\"2017-01-01\", periods=N, freq=\"5s\")\n        self.window = getattr(pd, constructor)(arr, index=index).rolling(window)",
+        "name": "rolling.VariableWindowMethods.peakmem_method",
         "param_names": [
             "constructor",
             "window",
@@ -16642,18 +16351,19 @@
                 "'count'",
                 "'skew'",
                 "'kurt'",
-                "'sum'"
+                "'sum'",
+                "'sem'"
             ]
         ],
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "6a6861efb8c2518bcdcbcffd838f60842faea1b87b5d13d1818bcaca5c57b87b"
+        "version": "31f6b5028bb8381d30a34ff49ab844733784a43601109f71d1545676cd073b68"
     },
-    "rolling.VariableWindowMethods.time_rolling": {
-        "code": "class Methods:\n    def time_rolling(self, constructor, window, dtype, method):\n        getattr(self.roll, method)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass VariableWindowMethods:\n    def setup(self, constructor, window, dtype, method):\n        N = 10 ** 5\n        arr = (100 * np.random.random(N)).astype(dtype)\n        index = pd.date_range(\"2017-01-01\", periods=N, freq=\"5s\")\n        self.roll = getattr(pd, constructor)(arr, index=index).rolling(window)",
+    "rolling.VariableWindowMethods.time_method": {
+        "code": "class Methods:\n    def time_method(self, constructor, window_kwargs, dtype, method):\n        getattr(self.window, method)()\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass VariableWindowMethods:\n    def setup(self, constructor, window, dtype, method):\n        N = 10 ** 5\n        arr = (100 * np.random.random(N)).astype(dtype)\n        index = pd.date_range(\"2017-01-01\", periods=N, freq=\"5s\")\n        self.window = getattr(pd, constructor)(arr, index=index).rolling(window)",
         "min_run_count": 2,
-        "name": "rolling.VariableWindowMethods.time_rolling",
+        "name": "rolling.VariableWindowMethods.time_method",
         "number": 0,
         "param_names": [
             "constructor",
@@ -16684,7 +16394,8 @@
                 "'count'",
                 "'skew'",
                 "'kurt'",
-                "'sum'"
+                "'sum'",
+                "'sem'"
             ]
         ],
         "repeat": 0,
@@ -16693,7 +16404,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "e3a5a81bf890b321f5181debdaa545b58d7cdb8e860317facb61dd5c7e5e9e75",
+        "version": "2bb7c4c9d85c55f5d5ec773fe661fbe3c31552dbc50360e7df1b367027320089",
         "warmup_time": -1
     },
     "series_methods.All.time_all": {
@@ -16884,6 +16595,30 @@
         "type": "time",
         "unit": "seconds",
         "version": "293b41b446df29f5e77e19b14540c5af87a0168e4710d64dbb12037435ef4202",
+        "warmup_time": -1
+    },
+    "series_methods.ModeObjectDropNAFalse.time_mode": {
+        "code": "class ModeObjectDropNAFalse:\n    def time_mode(self, N):\n        self.s.mode(dropna=False)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ModeObjectDropNAFalse:\n    def setup(self, N):\n        self.s = Series(np.random.randint(0, N, size=10 * N)).astype(\"object\")",
+        "min_run_count": 2,
+        "name": "series_methods.ModeObjectDropNAFalse.time_mode",
+        "number": 0,
+        "param_names": [
+            "N"
+        ],
+        "params": [
+            [
+                "1000",
+                "10000",
+                "100000"
+            ]
+        ],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "e2488dac5c2fdbcfe29cc7e9e32e32b33227ebda39debbcf7e35dbc59aea3f4a",
         "warmup_time": -1
     },
     "series_methods.NSort.time_nlargest": {
@@ -17137,6 +16872,30 @@
         "type": "time",
         "unit": "seconds",
         "version": "1f5bd690b4a0f777032140a9e0c26ed03c57e4402268b2e8a64b3e1a88d4ee63",
+        "warmup_time": -1
+    },
+    "series_methods.ValueCountsObjectDropNAFalse.time_value_counts": {
+        "code": "class ValueCountsObjectDropNAFalse:\n    def time_value_counts(self, N):\n        self.s.value_counts(dropna=False)\n\ndef setup(*args, **kwargs):\n    # This function just needs to be imported into each benchmark file to\n    # set up the random seed before each function.\n    # https://asv.readthedocs.io/en/latest/writing_benchmarks.html\n    np.random.seed(1234)\n\nclass ValueCountsObjectDropNAFalse:\n    def setup(self, N):\n        self.s = Series(np.random.randint(0, N, size=10 * N)).astype(\"object\")",
+        "min_run_count": 2,
+        "name": "series_methods.ValueCountsObjectDropNAFalse.time_value_counts",
+        "number": 0,
+        "param_names": [
+            "N"
+        ],
+        "params": [
+            [
+                "1000",
+                "10000",
+                "100000"
+            ]
+        ],
+        "repeat": 0,
+        "rounds": 2,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "a95ddcf5298c1d0d3e53729949f04ee80696bd4b75829dc18ba02781f93d57eb",
         "warmup_time": -1
     },
     "sparse.Arithmetic.time_add": {
